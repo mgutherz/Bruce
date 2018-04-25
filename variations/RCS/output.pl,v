@@ -1,0 +1,380 @@
+head	1.6;
+access;
+symbols;
+locks
+	blj:1.6; strict;
+comment	@% @;
+
+
+1.6
+date	94.11.28.22.53.44;	author blj;	state Exp;
+branches;
+next	1.5;
+
+1.5
+date	94.11.19.23.04.05;	author blj;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	94.11.19.19.40.56;	author blj;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	94.11.19.18.22.06;	author blj;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	94.11.19.16.23.39;	author blj;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	94.11.19.02.46.55;	author blj;	state Exp;
+branches;
+next	;
+
+
+desc
+@INITIAL CHECK-IN
+@
+
+
+1.6
+log
+@about to add a whole new level of abstraction,
+where the old system is used to generate an enormous
+amount of raw material, and a structurizer module will
+enforce some structure on the thing.
+@
+text
+@#
+#
+# output.pl
+#
+#
+
+sub init_output {
+    if ($DEBUG) {
+	print "init_output\n";
+    }
+
+    $PitchMnemonic =		'pitch';
+    $ArticulationMnemonic =	'artic';
+    $RhythmMnemonic =		'rhyth';
+    $VelocityMnemonic =		'veloc';
+    $KeyMnemonic =		'key';
+    $MeasureMnemonic =		'measures';
+    $InstrumentMnemonic =	'progr';
+    $SpeedMnemonic =		'speed';
+    $TimesigMnemonic =		'timesig';
+}
+
+
+
+
+sub output_score {
+    my $i;
+
+    $LINE = 1;
+    &score_init;
+
+    for ($i=0; $i<$OutputScore_ID; $i++) {
+
+	print "PHRASE $i\n" if $DEBUG;
+
+	&output_key($i);
+	&output_measures($i);
+	&output_instrument($i);
+	&output_pitches($i);
+	&output_articulations($i);
+	&output_rhythms($i);
+	&output_velocities($i);
+    }
+
+    &score_wrapup;
+}
+
+
+
+sub commentline {
+    print "0, " ;
+}
+
+sub dataline {
+    print "$LINE, " ;
+    $LINE++;
+}
+
+sub score_init {
+    &commentline; print	"comment Lowest BadPercentage = ", $BestSoFar * 100, " ; \n" ;
+    &commentline; print	"comment Iteration Type = $IterationType ; \n";
+    &dataline; print	"clear clear ; \n" ;
+    &output_speed(0);
+    &output_timesig(0);
+}
+
+
+sub score_wrapup {
+    &dataline; print	"finis 10;\n" ;
+    &dataline; print	"start 0; \n" ;
+    &dataline; print	"start 1; \n" ;
+}
+
+
+sub output_speed {
+    my ($id) = @@_;
+
+    if ($OutputScore{ $id.$Speed }) {
+	&dataline; print	$SpeedMnemonic,
+				" ", $OutputScore{ $id.$Speed },
+				" ; \n";
+    }
+}
+
+
+
+sub output_timesig {
+    my ($id) = @@_;
+
+    if ($OutputScore{ $id.$Timesig }) {
+	&dataline; print	$TimesigMnemonic,
+				" ", $OutputScore{ $id.$Timesig },
+				" ; \n";
+    }
+}
+
+
+
+sub output_key {
+    my ($id) = @@_;
+
+    if ($OutputScore{ $id.$Key }) {
+	&dataline; print	$KeyMnemonic,
+				" ", $OutputScore{ $id.$Octave },
+				" ", $OutputScore{ $id.$Key },
+				" ", $OutputScore{ $id.$Major },
+				" ; \n";
+    }
+}
+
+
+
+sub output_measures {
+    my ($id) = @@_;
+
+    &dataline; print	$MeasureMnemonic,
+			" ", $OutputScore{ $id.$Measures },
+			" ; \n";
+}
+
+
+
+sub output_instrument {
+    my ($id) = @@_;
+
+    return unless $OutputScore{ $id.$Instrument };
+
+    &dataline; print	$OutputScore{ $id.$Channel },
+			": ", $InstrumentMnemonic,
+			" ", $OutputScore{ $id.$Instrument },
+			" ; \n";
+}
+
+
+
+sub output_array {
+    my ($id, $type, $mnemonic) = @@_;
+    my ($i, $array);
+
+    $array = $OutputScore{ $id.$type };
+    &dataline; print	"$OutputScore{ $id.$Channel }:",
+			" ", $mnemonic,
+			" ", $array->[0] ;
+
+    for ($i=1; $i<=$array->[0]; $i++) {
+	print	" ", $array->[ $i ];
+    }
+    print " ; \n";
+}
+
+
+
+sub output_pitches {
+    my ($id) = @@_;
+
+    &output_array($id, $Pitches, $PitchMnemonic);
+}
+
+
+
+sub output_articulations {
+    my ($id) = @@_;
+
+    &output_array($id, $Articulations, $ArticulationMnemonic);
+}
+
+
+
+sub output_rhythms {
+    my ($id) = @@_;
+
+    &output_array($id, $Rhythms, $RhythmMnemonic);
+}
+
+
+
+sub output_velocities {
+    my ($id) = @@_;
+
+    &output_array($id, $Velocities, $VelocityMnemonic);
+}
+
+
+
+
+#
+# makes a copy of whatever is in the current score
+# so that when it is time to output our best, we can
+#
+sub save_this_score {
+    my ($its) = @@_;
+    my $id;
+
+    $IterationType = $its;
+
+    $OutputScore_ID = $ID;
+    for ($id=0; $id<$OutputScore_ID; $id++) {
+	for (@@AllTypes) {
+	    $OutputScore{ $id . $_ } = $Phrases{ $id . $_ };
+	}
+    }
+}
+
+
+
+1;
+@
+
+
+1.5
+log
+@Has GA portion working (?)
+everything looks pretty okay -- no missing data bugs anymore
+(where a portion of a field is uninitialized, leaving gaps in
+the output).  so far, ear doesn't hate anything; gotta work
+on that.
+@
+text
+@d11 10
+d29 1
+d32 1
+a32 1
+    for ($i=0; $i<$ID; $i++) {
+d50 3
+d54 4
+d60 3
+a62 1
+    print	"clear clear ; \n" ;
+d69 3
+a71 1
+    print	"finis 10; start 0,1 \n" ;
+d78 4
+a81 4
+    if ($Phrases{ $id.$Speed }) {
+	print	$SpeedMnemonic,
+		" ", $Phrases{ $id.$Speed },
+		" ; \n";
+d90 4
+a93 4
+    if ($Phrases{ $id.$Timesig }) {
+	print	$TimesigMnemonic,
+		" ", $Phrases{ $id.$Timesig },
+		" ; \n";
+d102 6
+a107 6
+    if ($Phrases{ $id.$Key }) {
+	print	$KeyMnemonic,
+		" ", $Phrases{ $id.$Octave },
+		" ", $Phrases{ $id.$Key },
+		" ", $Phrases{ $id.$Major },
+		" ; \n";
+d116 3
+a118 3
+    print	$MeasureMnemonic,
+		" ", $Phrases{ $id.$Measures },
+		" ; \n";
+d126 1
+a126 1
+    return unless $Phrases{ $id.$Instrument };
+d128 4
+a131 4
+    print	$Phrases{ $id.$Channel },
+		": ", $InstrumentMnemonic,
+		" ", $Phrases{ $id.$Instrument },
+		" ; \n";
+d140 4
+a143 4
+    $array = $Phrases{ $id.$type };
+    print	"$Phrases{ $id.$Channel }:",
+		" ", $mnemonic,
+		" ", $array->[0] ;
+d181 21
+@
+
+
+1.4
+log
+@OKAY, SO IT's FINALLY FUCKING WORKING,
+
+NOW
+
+I CAN START WORKING ON THE EAR
+@
+text
+@a44 2
+    &output_key(0);
+    &output_measures(0);
+d103 2
+@
+
+
+1.3
+log
+@Just about done for now - about to add the ear
+@
+text
+@d21 1
+a21 1
+    for ($i=1; $i<$ID; $i++) {
+@
+
+
+1.2
+log
+@another checkin - mostly working now
+@
+text
+@d22 3
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@d17 2
+d101 1
+a101 1
+    my ($id, $type, $mnemonic) = @@_;
+d113 1
+a113 1
+    my ($array);
+d116 2
+a117 2
+    print	$Phrases{ $id.$Channel },
+		": ", $mnemonic,
+@

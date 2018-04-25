@@ -1,0 +1,41 @@
+head	1.1;
+access;
+symbols;
+locks
+	blj:1.1; strict;
+comment	@% @;
+
+
+1.1
+date	94.12.11.02.19.41;	author blj;	state Exp;
+branches;
+next	;
+
+
+desc
+@everything is more or less
+working perfectly.  about to
+debug EAR (seems to be screwing
+up a bit).  next is to add some
+GA stuff to the composer.
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@#/bin/perl
+while (<>) {
+    ($a0, $a1, $a2, $a3, $a4, $a5, $a6, $a7, $a8, $a9, $aA, $aB, $aC) = split;
+    next if $a1 eq "comment";
+    next if $a1 eq "clear";
+    next if $a1 eq "finis";
+    next if $a1 eq "start";
+
+    print "$a1 $a2 $a3 $a4 $a5 $a6 $a7 $a8 $a9 $aA $aB $aC \n";
+}
+
+
+@

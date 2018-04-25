@@ -1,0 +1,11 @@
+foreach z ( 17 19 37 41 383 53 31 67 97 101 103 107 113 131 717 719 737 741 7383 753 731 767 797 7101 7103 7107 7113 7131 511 517 911 )
+mkdir Generations/OUT.$z
+rm Generations/OUT.$z/OPINIONS.$z
+perl5 variations.pl $z noear > Generations/OUT.$z/SCORE.$z.Z
+foreach i ( 0 1 2 3 4 5 6 7 8 9 A B C D E F )
+cp Generations/01/Ear.Gene.$i ./Ear.Gene
+echo Testing Ear.Gene.$i
+perl5 variations.pl $z opinion $i >> Generations/OUT.$z/OPINIONS.$z
+perl5 variations.pl $z variations $i > Generations/OUT.$z/SCORE.$z.$i
+end
+end

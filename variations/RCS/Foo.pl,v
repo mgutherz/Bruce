@@ -1,0 +1,161 @@
+head	1.4;
+access;
+symbols;
+locks
+	blj:1.4; strict;
+comment	@% @;
+
+
+1.4
+date	94.11.28.22.53.44;	author blj;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	94.11.19.18.22.06;	author blj;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	94.11.19.16.23.39;	author blj;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	94.11.19.02.46.55;	author blj;	state Exp;
+branches;
+next	;
+
+
+desc
+@INITIAL CHECK-IN
+@
+
+
+1.4
+log
+@about to add a whole new level of abstraction,
+where the old system is used to generate an enormous
+amount of raw material, and a structurizer module will
+enforce some structure on the thing.
+@
+text
+@
+#$arraylist[0] = [5, 1, 2, 3, 4, 5];
+#$arraylist[1] = [4, 4, 5, 6, 7];
+#$arraylist[2] = [8, 1, 1, 1, 1, 4, 5, 6, 7];
+#
+#$arraylist[3] = [3, rand(20), rand(20), rand(20)];
+#
+#
+#for ($i = 0; $i<4; $i++) {
+#    print "Array $i: " ;
+#    $array = $arraylist[$i];
+#    for ($j=1; $j<=$array->[0]; $j++) {
+#	print "$array->[$j] " ;
+#    }
+#    print "\n";
+#}
+
+$x = [ a , b , c ];
+$i = @@{$x};
+print $i, "\n";
+
+
+sub foo2 {
+    return [ rand(100), rand(100), rand(100) ];
+}
+
+sub foo {
+    my($x);
+    $blurb = 12;
+
+    for ($i = 0; $i < 10; $i++) {
+	$x[$i] = rand(100);
+    }
+    return [ $blurb, eval join(',', @@x[0 .. $#x]) ];
+}
+
+
+for ($i = 0; $i < 10; $i++) {
+    $Array[$i] = rand(100);
+}
+#print "TEST: ", join(',', @@Array[0 .. $#Array]) ;
+#@@B = @@Array[0 .. 10];
+#print "\nB: ";
+#for ($i = 0; $i < 10; $i++) {
+#    print $B[$i], ' ';
+#}
+#print "\n";
+
+
+$ap = &foo;
+$bp = &foo;
+
+
+
+print "array a[0], a[1]: ", $ap->[0], " ", $ap->[1];
+print "\n\narray a: ";
+for ($i = 0; $i < 10; $i++) {
+    print "$ap->[$i] " ;
+}
+print "\n";
+print "array b: ";
+for ($i = 0; $i < 10; $i++) {
+    print "$bp->[$i] " ;
+}
+print "\n";
+
+
+
+
+print "NEXT\n" ;
+
+@@f = @@$ap x 4;
+for ($i = 0; $i < 40; $i++) {
+    print "$f[$i] " ;
+}
+
+@
+
+
+1.3
+log
+@Just about done for now - about to add the ear
+@
+text
+@d18 4
+@
+
+
+1.2
+log
+@another checkin - mostly working now
+@
+text
+@d63 10
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@d30 1
+a30 1
+    return [ $blurb, join(',', @@x[0 .. $#x]) ];
+d37 1
+a37 1
+print "TEST: ", join(',', @@Array[0 .. $#Array]) ;
+d39 5
+a43 5
+print "\nB: ";
+for ($i = 0; $i < 10; $i++) {
+    print $B[$i], ' ';
+}
+print "\n";
+d51 2
+a52 1
+print "array a: ";
+@

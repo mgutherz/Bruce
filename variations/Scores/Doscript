@@ -1,0 +1,11 @@
+foreach i (z.*)
+echo "clear clear ;" > FOO
+foreach j (`cat $i`)
+cat ../Generations/$j | perl ../Strip.pl >> FOO
+end
+echo "finis 10 ;" >> FOO
+echo "start 0 ;" >> FOO
+echo "start 1 ;" >> FOO
+cat FOO | awk '{ print NR, ",", $0 }' > SCORE.$i
+end
+

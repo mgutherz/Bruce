@@ -1,0 +1,376 @@
+head	1.1;
+access;
+symbols;
+locks
+	blj:1.1; strict;
+comment	@% @;
+
+
+1.1
+date	94.11.19.16.23.39;	author blj;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@#
+#
+#
+# themes.pl
+#
+# submodule that implements the handling of themes, such as extracting
+# portions and modifying them, etc.
+#
+
+
+
+#
+#
+# init_themes
+#
+# called at program start-up
+#
+#
+sub init_themes {
+
+    if ($DEBUG) {
+	print "init_themes\n" ;
+    }
+
+    $ID = 0;
+    $Secondary = 0;
+
+    $Phrases{ $ID . $Speed } =	$DefaultSpeed;
+    $Phrases{ $ID . $Timesig } = $DefaultTimesig;
+
+    $Phrases{ $ID . $Key } =	$DefaultKey;
+    $Phrases{ $ID . $Octave } =	$DefaultOctave;
+    $Phrases{ $ID . $Major } =	$DefaultMajor;
+    $Phrases{ $ID . $Measures } =	0;
+
+    $vary = { 
+	$Pitches	=> \&vary_pitches,
+	$Articulations	=> \&vary_articulations,
+	$Rhythms	=> \&vary_rhythms,
+	$Velocities	=> \&vary_velocities,
+
+	$Key	=> \&vary_key,
+	$Octave	=> \&vary_octave,
+	$Major	=> \&vary_major,
+    };
+
+    $Keys = [
+	"A", "A#", "Ab", 
+	"B", "B#", "Bb", 
+	"C", "C#", "Cb", 
+	"D", "D#", "Db", 
+	"E", "E#", "Eb", 
+	"F", "F#", "Fb", 
+	"G", "G#", "Gb", 
+    ];
+
+    $rhythm_array = [
+	0 => 0.25,
+	1 => 0.5,
+	2 => 0.5,
+	3 => 1.0,
+	4 => 1.0,
+	5 => 1.0,
+	6 => 1.0,
+	7 => 2.0,
+	8 => 2.0,
+	9 => 4.0,
+    ];
+
+}
+
+
+#
+#
+# variations
+#
+#
+
+sub vary_pitches {
+    my ($themep, $idx, $len) = @@_;
+    my ($i, $a, $b, $t);
+
+    $a = $themep->{ $idx . $Pitches };
+    $b[0] = $len;
+    &print_array($a, $len, 'vary_pitches');
+
+    #
+    # add or subtract up to an octave
+    #
+    $t = int(rand(15)) - 7; 
+    $i = int(rand($a->[0])) + 1;
+    while ($len-- > 0) {
+	$b[$i] = $a->[int(rand($a->[0])) + 1];
+    }
+
+    return [ eval join(',', @@b[0 .. $#b]) ];
+}
+
+
+
+sub vary_articulations {
+    my ($themep, $idx, $len) = @@_;
+    my ($i, $a, $b, $t);
+
+    $a = $themep->{ $idx . $Articulations };
+    &print_array($a, $len, 'vary_artic');
+    for ($i=1; $i<=$len; $i++) {
+	$b[$i] = $a->[int(rand($a->[0])) + 1];
+    }
+    $b[0] = $len;
+
+    return [ eval join(',', @@b[0 .. $#b]) ];
+}
+
+
+
+sub vary_rhythms {
+    my ($themep, $idx, $len) = @@_;
+    my ($i, $a, $b, $t);
+
+    $a = $themep->{ $idx . $Rhythms };
+    &print_array($a, $len, 'vary_rhythms');
+    for ($i=1; $i<=$len; $i++) {
+	$b[$i] = $a->[int(rand($a->[0])) + 1] * $rhythm_array->[int(rand(10))];
+    }
+    $b[0] = $len;
+
+    return [ eval join(',', @@b[0 .. $#b]) ];
+}
+
+
+
+sub vary_velocities {
+    my ($themep, $idx, $len) = @@_;
+    my ($i, $a, $b, $t);
+
+    $a = $themep->{ $idx . $Velocities };
+    &print_array($a, $len, 'vary_velocities');
+    for ($i=1; $i<=$len; $i++) {
+	$b[$i] = $a->[int(rand($a->[0])) + 1];
+    }
+    $b[0] = $len;
+
+    return [ eval join(',', @@b[0 .. $#b]) ];
+}
+
+
+
+sub vary_key {
+    if ($DEBUG) {
+	print "vary_key \n" ;
+    }
+
+    return $Keys->[int(rand(@@$Keys))];
+}
+
+sub vary_octave {
+    if ($DEBUG) {
+	print "vary_octave \n" ;
+    }
+
+    return int(rand(10));
+}
+
+sub vary_major {
+    if ($DEBUG) {
+	print "vary_major \n" ;
+    }
+
+    if (&random(50)) {
+	return "maj";
+    } else {
+	return "min";
+    }
+}
+
+
+
+
+sub print_array {
+    my ($x, $len, $from) = @@_;
+    my $i;
+
+    return unless $DEBUG;
+
+    print "print_array from $from: take $len from X: ", $x->[0], "," ;
+    for ($i=1; $i<=$x->[0]; $i++) {
+	print " ", $x->[$i] ;
+    }
+    print "\n";
+}
+
+
+
+#
+#
+# choose_theme
+#
+# we figure that we'll usually choose the primary theme, but
+# occasionally we'll take from one of the secondary themes, and
+# all of them are equally likely
+#
+#
+
+sub choose_theme {
+    if (&random($ChoosePrimary)) {
+	return $Primary;
+    } else {
+	return int(rand($Secondary));
+    }
+}
+
+
+
+
+#
+#
+# set_theme
+#
+# called to add to the list of themes -- we can either set the
+# primary theme or add to the list of secondary themes.  when
+# the one to add is not the primary theme, increment $Secondary.
+# (this is not generally called directly, but by set_primary and
+# set_secondary)
+#
+#
+sub set_theme {
+    my ($which, $themep) = @@_;
+    my $i;
+
+    if ($DEBUG) {
+	print "set_theme:\n" ;
+	for (@@AllTypes) {
+	    print "    $_ : " ;
+	    $array = $themep->{$_};
+	    for ($i=1; $i<=$array->[0]; $i++) {
+		print "$array->[$i] " ;
+	    }
+	    print "\n";
+	}
+    }
+
+    for (@@AllTypes) {
+	$Themes{ $which.$_ } = $themep->{$_};
+    }
+}
+
+
+#
+#
+# set_primary_theme
+# 
+# checks to see if there is already a defined theme in the PRIMARY slot;
+# if there is, it moves that to the secondary slots first
+#
+#
+sub set_primary_theme {
+    my ($themep, $idx) = @@_;
+
+    if ($Themes{$Primary.$Pitches}) {
+	&set_secondary_theme(\%Themes, $Primary);
+    }
+    &copy_theme($themep, $idx, \%Themes, $Primary, @@AllTypes);
+}
+
+
+#
+#
+# set_secondary_theme
+#
+# This is the ONLY place where we should be incrementing $Secondary
+#
+#
+sub set_secondary_theme {
+    my ($themep, $idx) = @@_;
+
+    &copy_theme($themep, $idx, \%Themes, $Secondary, @@AllTypes);
+    $Secondary++;
+}
+
+
+#
+#
+# copy_theme
+#
+# generic copy routine to copy all attributes from one place to another
+# syntax:
+#	from is a pointer to an associative array
+#	f_idx is the index into the FROM array
+#	to is a pointer to an associative array
+#	t_idx is the index into the TO array
+#	@@attrs is the list of which attributes to copy
+#
+#
+sub copy_theme {
+    my ($fromp, $f_idx, $top, $t_idx, @@attrs) = @@_;
+    my ($i, $type);
+
+    for (@@attrs) {
+	$type = $_;
+
+	if ($DEBUG) {
+	    print "copy_theme $_ : " ;
+	    $array = $fromp->{$f_idx . $_};
+	    for ($i=1; $i<=$array->[0]; $i++) {
+		print "$array->[$i] " ;
+	    }
+	    print "\n";
+	}
+
+	if ($fromp->{ $f_idx . $type } ne "") {
+	    $top->{ $t_idx . $type } = $fromp->{ $f_idx . $type };
+	}
+
+    }
+}
+
+
+
+
+sub create_theme {
+    my ($top, $t_idx) = @@_;
+
+    $top->{ $t_idx.$Pitches } =		[ 3, 5, 1, 9 ];
+    $top->{ $t_idx.$Articulations } =	[ 3, 40, 40, 110 ];
+    $top->{ $t_idx.$Rhythms } =		[ 3, 25, 25, 50 ];
+    $top->{ $t_idx.$Velocities } =	[ 3, 95, 80, 110 ];
+
+    $top->{ $t_idx.$Channel } =		int(rand($NumInstruments)) + 1;
+    $top->{ $t_idx.$Instrument } =	$InstrMapping[ $top->{ $t_idx.$Channel } ];
+    $top->{ $t_idx.$Measures } =	int(rand(8));
+
+}
+
+
+
+sub modify_theme {
+    my ($fromp, $f_idx, $top, $t_idx) = @@_;
+
+    $top->{ $t_idx.$Pitches } =		[ 8, $Rest, 3, 4, 5, 4, 3, 2, 1 ];
+    $top->{ $t_idx.$Articulations } =	[ 8, 100, 100, 100, 100, 100, 100, 100, 100, 100 ];
+    $top->{ $t_idx.$Rhythms } =		[ 8, 12.5, 12.5, 12.5, 12.5, 12.5, 12.5, 12.5, 12.5 ];
+    $top->{ $t_idx.$Velocities } =	[ 8, 90, 90, 90, 90, 100, 90, 80, 70 ];
+
+    $top->{ $t_idx.$Channel } =		int(rand($NumInstruments)) + 1;
+    $top->{ $t_idx.$Instrument } =	$InstrMapping[ $top->{ $t_idx.$Channel } ];
+    $top->{ $t_idx.$Measures } =	int(rand(8));
+
+}
+
+
+1;
+@

@@ -1,0 +1,128 @@
+init_composer
+init_ear
+init_output
+init_themes
+init_variations 
+copy_theme _Pitch : 5 1 9 5 1 rest 
+copy_theme _Articulation : 40 40 99 30 60 100 
+copy_theme _Rhythm : 25 25 75 25 25 125 
+copy_theme _Velocity : 100 90 110 80 90 80 
+random_measures 
+copy_theme _Pitch : 7 8 5 3 4 rest 
+copy_theme _Articulation : 120 120 200 60 150 100 
+copy_theme _Rhythm : 25 25 75 25 25 125 
+copy_theme _Velocity : 100 90 110 80 90 80 
+random_measures 
+copy_theme _Pitch : 4 5 5 3 4 
+copy_theme _Articulation : 99 70 70 90 50 
+copy_theme _Rhythm : 12.5 25 25 12.5 25 
+copy_theme _Velocity : 100 100 100 80 90 
+random_measures 
+copy_theme _Pitch : 4 5 2 4 3 
+copy_theme _Articulation : 60 70 80 90 100 
+copy_theme _Rhythm : 12.5 12.5 12.5 12.5 50 
+copy_theme _Velocity : 90 90 90 100 100 
+random_measures 
+copy_theme _Pitch : 5 1 9 
+copy_theme _Articulation : 80 80 150 
+copy_theme _Rhythm : 25 25 50 
+copy_theme _Velocity : 95 80 110 
+random_measures 
+copy_theme _Pitch : rest 3 4 5 4 3 2 1 
+copy_theme _Articulation : 110 110 110 110 110 110 110 110 
+copy_theme _Rhythm : 12.5 12.5 12.5 12.5 12.5 12.5 12.5 12.5 
+copy_theme _Velocity : 90 90 90 90 100 90 80 70 
+random_measures 
+copy_theme _Pitch : 8 7 8 5 7 8 5 
+copy_theme _Articulation : 110 100 100 70 100 100 70 
+copy_theme _Rhythm : 200 25 25 50 25 25 50 
+copy_theme _Velocity : 100 110 110 100 80 80 100 
+random_measures 
+copy_theme _Pitch : 5 3 4 2 1 10 9 
+copy_theme _Articulation : 110 110 110 110 70 70 120 
+copy_theme _Rhythm : 100 100 100 100 25 25 150 
+copy_theme _Velocity : 90 90 90 90 110 110 100 
+random_measures 
+create_score
+PHRASE 0
+compose_phrase
+random_channel 
+random_measures 
+vary_key 
+vary_major 
+vary_pitches 
+print_array from vary_pitches: take 3 from 6, 5 1 9 5 1 rest
+vary_articulations 
+print_array from vary_artic: take 3 from 6, 40 40 99 30 60 100
+vary_rhythms 
+print_array from vary_rhythms: take 3 from 6, 25 25 75 25 25 125
+vary_velocities 
+print_array from vary_velocities: take 3 from 6, 100 90 110 80 90 80
+PHRASE 1
+do_special_event
+repeat_section_modified
+do_special_event
+harmonize_last_phrase
+copy_theme _Pitch : 7 rest 11 
+copy_theme _Articulation : 35 86 26 
+copy_theme _Rhythm : 25 25 75 
+copy_theme _Velocity : 124 90 101 
+copy_theme _Octave : 
+copy_theme _Key : 
+copy_theme _Major : 
+copy_theme _Measures : 
+copy_theme _Channel : 
+modify_pitches 
+transpose_pitches 
+print_array from transpose_pitches: take 3 from 3, 7 rest 11
+do_special_event
+harmonize_last_phrase
+copy_theme _Pitch : 2 rest 6 
+copy_theme _Articulation : 35 86 26 
+copy_theme _Rhythm : 25 25 75 
+copy_theme _Velocity : 124 90 101 
+copy_theme _Octave : 
+copy_theme _Key : 
+copy_theme _Major : 
+random_measures 
+copy_theme _Channel : 
+modify_pitches 
+multiply_pitches 
+print_array from multiply_pitches: take 3 from 3, 2 rest 6
+do_special_event
+harmonize_last_phrase
+copy_theme _Pitch : 2 rest 6 
+copy_theme _Articulation : 35 86 26 
+copy_theme _Rhythm : 25 25 75 
+copy_theme _Velocity : 124 90 101 
+copy_theme _Octave : 
+copy_theme _Key : 
+copy_theme _Major : 
+random_measures 
+copy_theme _Channel : 
+modify_pitches 
+multiply_pitches 
+print_array from multiply_pitches: take 3 from 3, 2 rest 6
+compose_phrase
+random_channel 
+random_measures 
+vary_octave 
+vary_pitches 
+print_array from vary_pitches: take 7 from 8, rest 3 4 5 4 3 2 1
+vary_articulations 
+print_array from vary_artic: take 7 from 8, 110 110 110 110 110 110 110 110
+vary_rhythms 
+print_array from vary_rhythms: take 7 from 8, 12.5 12.5 12.5 12.5 12.5 12.5 12.5 12.5
+vary_velocities 
+print_array from vary_velocities: take 7 from 8, 90 90 90 90 100 90 80 70
+PHRASE 5
+TotalSections: 8 
+: 0 Bad Sections out of 1 Total Transitions: 0
+0, comment Lowest BadPercentage = 100 ; 
+0, comment Iteration Type =  ; 
+1, clear clear ; 
+2, speed 100 ; 
+3, timesig 4 ; 
+4, finis 10;
+5, start 0; 
+6, start 1; 

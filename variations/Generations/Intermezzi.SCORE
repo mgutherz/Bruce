@@ -1,0 +1,11 @@
+key 4 C maj ; 
+measures 10 ; 
+8: pitch 6 5 1 9 5 1 rest ; 
+8: artic 6 40 40 99 30 60 100 ; 
+8: rhyth 6 25 25 75 25 25 125 ; 
+8: veloc 6 100 90 110 80 90 80 ; 
+measures 10 ; 
+6: pitch 1 rest ; 
+6: artic 1 100 ; 
+6: rhyth 1 100 ; 
+6: veloc 1 100 ; 

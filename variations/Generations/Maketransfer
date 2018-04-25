@@ -1,0 +1,18 @@
+rm FOO.opinions
+rm FOO.fragments
+echo "clear clear ;" > FOO.fragments
+cat Intermezzi.OPINIONS >> FOO.opinions
+foreach i (OUT.2* OUT.8*)
+#foreach i (OUT.*)
+#foreach i (OUT.17 OUT.19 OUT.37 OUT.41 OUT.383 OUT.53 OUT.31 OUT.67 OUT.97 OUT.101 OUT.103 OUT.107 OUT.113 OUT.131 OUT.717 )
+cat $i/SCORE.*.Z | perl ../Strip.pl >> FOO.fragments
+cat Intermezzi.SCORE >> FOO.fragments
+echo $i >> FOO.opinions
+cat $i/OPINIONS.* >> FOO.opinions
+cat Intermezzi.OPINIONS >> FOO.opinions
+end
+echo "finis 10 ;" >> FOO.fragments
+echo "start 0 ;" >> FOO.fragments
+echo "start 1 ;" >> FOO.fragments
+cat FOO.fragments | awk '{ print NR, ",", $0 }' > transfer/SCORES.all.Z
+cp FOO.opinions transfer/OPINIONS.all.Z

@@ -1,0 +1,515 @@
+head	1.8;
+access;
+symbols;
+locks
+	blj:1.8; strict;
+comment	@% @;
+
+
+1.8
+date	94.11.28.22.53.44;	author blj;	state Exp;
+branches;
+next	1.7;
+
+1.7
+date	94.11.21.20.44.45;	author blj;	state Exp;
+branches;
+next	1.6;
+
+1.6
+date	94.11.20.01.25.09;	author blj;	state Exp;
+branches;
+next	1.5;
+
+1.5
+date	94.11.19.23.04.05;	author blj;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	94.11.19.19.40.56;	author blj;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	94.11.19.18.22.06;	author blj;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	94.11.19.16.24.43;	author blj;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	94.11.19.02.46.55;	author blj;	state Exp;
+branches;
+next	;
+
+
+desc
+@INITIAL CHECK-IN
+@
+
+
+1.8
+log
+@about to add a whole new level of abstraction,
+where the old system is used to generate an enormous
+amount of raw material, and a structurizer module will
+enforce some structure on the thing.
+@
+text
+@#!/usr/users/blj/bin/perl5
+#
+#
+#
+# variations.pl
+#
+# Creates music by a vaguely random process, corrected by
+# a genetic algorithmic EAR, which determines what transitions
+# are pleasing.
+#
+
+
+require "composer.pl";
+require "ear.pl";
+require "output.pl";
+require "themes.pl";
+require "utils.pl";
+
+
+
+
+$DEBUG =	0;
+$DEBUG2 =	0;
+
+
+
+#
+# Global Variables
+# (used by all of the submodules)
+# (some appear first in initialization)
+#
+
+$MaxIts =		10;
+$MaxPhrases =		5;
+$MaxPhraselen =		8;
+$NumInstruments =	8;
+$ID_start =		0;
+
+
+$DefaultOctave =	4;
+$DefaultKey =		'C';
+$DefaultMajor =		'maj';
+$DefaultSpeed =		100;
+$DefaultTimesig =	4;
+
+$Pitches =		'_Pitch';
+$Articulations =	'_Articulation';
+$Rhythms =		'_Rhythm';
+$Velocities =		'_Velocity';
+$Octave =		'_Octave';
+$Key =			'_Key';
+$Major = 		'_Major';
+$Measures =		'_Measures';
+$Instrument =		'_Instrument';
+$Channel =		'_Channel';
+$Speed =		'_Speed';
+$Timesig =		'_Timesignature';
+$Modified =		'_Modified';
+
+$Primary =		0;
+$rest =			'rest';
+
+@@AllTypes =	($Pitches, $Articulations, $Rhythms, $Velocities, $Octave, $Key, $Major, $Measures, $Channel);
+@@NoteTypes =	($Pitches, $Articulations, $Rhythms, $Velocities);
+@@NotNoteTypes =	($Octave, $Key, $Major, $Measures, $Channel);
+@@KeyTypes =	($Octave, $Key, $Major);
+
+
+
+#
+#
+# GA Stuff
+#
+#
+$EarGene =		"Ear.Gene";
+
+
+
+
+#
+# probabilities & Pseudoprobabilities
+#
+
+# these need not add to 100
+$KeyChange =			{
+		$Octave =>	60,
+		$Key =>		30,
+		$Major =>	40,
+};
+
+# these should add to 100
+$MaxMeasures =			{
+			0 =>	40,
+			1 =>	25,
+			2 =>	20,
+			3 =>	10,
+			4 =>	5,
+};
+
+$SpecialEvent =			30;
+$ChoosePrimary =		30;
+$BadAllowed =			33.4;
+$ModificationProb =		30;
+$ModifyOverOthers =		50;
+$RandomOverVary =		30;
+$ReUseProb =			30;
+
+#
+# pseudos:
+#
+$CreateTheme_Pprob =		2;
+$ChangeMappings_Pprob =		6;
+$RepeatSectionLiteral_Pprob =	3;
+$RepeatSectionModified_Pprob =	4;
+$RepeatRecentLiteral_Pprob =	3;
+$RepeatRecentModified_Pprob =	6;
+
+
+
+
+
+sub init_variations {
+    print "init_variations \n" if $DEBUG;
+
+    #srand(time | $$);
+    srand(17);
+}
+
+
+
+#
+#
+# INITIALIZATION STEP
+#
+#
+
+&init_composer;
+&init_ear;
+&init_output;
+&init_themes;
+&init_variations;
+
+
+
+
+#
+# user-defined themes
+#
+
+
+$u_theme{ 0 .$Pitches } =	[ 6, 5, 1, 9, 5, 1, $rest ];
+$u_theme{ 0 .$Articulations } =	[ 6, 40, 40, 99, 30, 60, 50 ];
+$u_theme{ 0 .$Rhythms } =	[ 6, 25, 25, 75, 25, 25, 125 ];
+$u_theme{ 0 .$Velocities } =	[ 6, 100, 90, 110, 80, 90, 80 ];
+
+$u_theme{ 1 .$Pitches } =	[ 6, 7, 8, 5, 3, 4, $rest ];
+$u_theme{ 1 .$Articulations } =	[ 6, 120, 120, 200, 60, 150, 50 ];
+$u_theme{ 1 .$Rhythms } =	[ 6, 25, 25, 75, 25, 25, 125 ];
+$u_theme{ 1 .$Velocities } =	[ 6, 100, 90, 110, 80, 90, 80 ];
+
+$u_theme{ 2 .$Pitches } =	[ 5, 4, 5, 5, 3, 4 ];
+$u_theme{ 2 .$Articulations } =	[ 5, 99, 70, 70, 90, 50 ];
+$u_theme{ 2 .$Rhythms } =	[ 5, 12.5, 25, 25, 12.5, 25 ];
+$u_theme{ 2 .$Velocities } =	[ 5, 100, 100, 100, 80, 90 ];
+
+$u_theme{ 3 .$Pitches } =	[ 5, 4, 5, 2, 4, 3 ];
+$u_theme{ 3 .$Articulations } =	[ 5, 60, 70, 80, 90, 100 ];
+$u_theme{ 3 .$Rhythms } =	[ 5, 12.5, 12.5, 12.5, 12.5, 50 ];
+$u_theme{ 3 .$Velocities } =	[ 5, 90, 90, 90, 100 ];
+
+$u_theme{ 4 .$Pitches } =	[ 3, 5, 1, 9 ];
+$u_theme{ 4 .$Articulations } =	[ 3, 80, 80, 150 ];
+$u_theme{ 4 .$Rhythms } =	[ 3, 25, 25, 50 ];
+$u_theme{ 4 .$Velocities } =	[ 3, 95, 80, 110 ];
+
+$u_theme{ 5 .$Pitches } =	[ 8, $rest, 3, 4, 5, 4, 3, 2, 1 ];
+$u_theme{ 5 .$Articulations } =	[ 8, 110, 110, 110, 110, 110, 110, 110, 110, 110 ];
+$u_theme{ 5 .$Rhythms } =	[ 8, 12.5, 12.5, 12.5, 12.5, 12.5, 12.5, 12.5, 12.5 ];
+$u_theme{ 5 .$Velocities } =	[ 8, 90, 90, 90, 90, 100, 90, 80, 70 ];
+
+&set_primary_theme(\%u_theme, 0);
+&set_secondary_theme(\%u_theme, 1);
+&set_secondary_theme(\%u_theme, 2);
+&set_secondary_theme(\%u_theme, 3);
+&set_secondary_theme(\%u_theme, 4);
+&set_secondary_theme(\%u_theme, 5);
+
+
+
+
+#
+#
+# MAIN LOOP
+#
+#
+
+#$| = 1;
+
+&create_score;
+
+&feed_score_to_ear;
+while (&ear_hates_it) {
+    &modify_score;
+    &feed_score_to_ear;
+}
+
+&output_score;
+
+
+@
+
+
+1.7
+log
+@GA part seems to be more or less working.
+@
+text
+@d33 2
+a34 1
+$MaxPhrases =		10;
+a35 1
+$MaxMeasures =		5;
+a67 10
+$PitchMnemonic =	'pitch';
+$ArticulationMnemonic =	'artic';
+$RhythmMnemonic =	'rhyth';
+$VelocityMnemonic =	'veloc';
+$KeyMnemonic =		'key';
+$MeasureMnemonic =	'measures';
+$InstrumentMnemonic =	'progr';
+$SpeedMnemonic =	'speed';
+$TimesigMnemonic =	'timesig';
+
+d83 17
+a99 1
+$KeyChange =			70;
+d102 5
+a106 4
+$ZeroMeasures =			40;
+$BadAllowed =			25;
+$ModificationProb =		20;
+$ModifyOverVary =		50;
+d157 1
+a157 1
+$u_theme{ 1 .$Articulations } =	[ 6, 80, 70, 99, 30, 150, 50 ];
+d172 1
+a172 1
+$u_theme{ 4 .$Articulations } =	[ 3, 40, 40, 110 ];
+d177 1
+a177 1
+$u_theme{ 5 .$Articulations } =	[ 8, 100, 100, 100, 100, 100, 100, 100, 100, 100 ];
+a201 1
+
+a202 1
+    &output_score if $DEBUG2;
+@
+
+
+1.6
+log
+@Working.  Good place to back up to, if needed.
+@
+text
+@d22 2
+a23 1
+$DEBUG = 0;
+d33 1
+a33 1
+$MaxPhrases =		100;
+d58 1
+d97 3
+a99 1
+$BadAllowed =			20;
+d118 2
+a119 1
+    srand(time | $$);
+d196 5
+a200 5
+&ear_hates_it;
+#while (&ear_hates_it) {
+#    &modify_score;
+#    &feed_score_to_ear;
+#}
+@
+
+
+1.5
+log
+@Has GA portion working (?)
+everything looks pretty okay -- no missing data bugs anymore
+(where a portion of a field is uninitialized, leaving gaps in
+the output).  so far, ear doesn't hate anything; gotta work
+on that.
+@
+text
+@d32 1
+a32 1
+$MaxPhrases =		30;
+d36 1
+d95 1
+d113 2
+d185 1
+a185 1
+$| = 1;
+d191 5
+a195 4
+while (&ear_hates_it) {
+    &modify_score;
+    &feed_score_to_ear;
+}
+@
+
+
+1.4
+log
+@OKAY, SO IT's FINALLY FUCKING WORKING,
+
+NOW
+
+I CAN START WORKING ON THE EAR
+@
+text
+@d22 1
+a22 1
+$DEBUG = 1;
+d32 1
+a32 1
+$MaxPhrases =		50;
+d35 1
+a35 1
+$NumInstruments =	4;
+d77 9
+d93 1
+a109 2
+    my $i;
+
+a110 10
+
+    for ($i=0; $i<10; $i++) {
+	print $rhythm_array->[$i], ', ';
+    }
+    print "\n";
+    for ($i=0; $i<100; $i++) {
+	if (int(rand(10)) >= 10) {
+	    print "WHOA THERE!!!!!!!\n" ;
+	}
+    }
+d181 2
+d185 6
+a190 5
+#&feed_score_to_ear;
+#while (&ear_hates_it) {
+#    &modify_score;
+#    &feed_score_to_ear;
+#}
+@
+
+
+1.3
+log
+@Just about done for now - about to add the ear
+@
+text
+@d57 1
+a57 1
+$Primary =		'Primary';
+d62 1
+d97 20
+d127 1
+@
+
+
+1.2
+log
+@another checkin - mostly working now
+@
+text
+@d22 1
+a22 1
+$DEBUG = 0;
+d32 2
+a33 1
+$MaxPhrases =		500;
+d58 1
+a58 1
+$Rest =			'rest';
+d115 1
+a115 1
+$u_theme{ 0 .$Pitches } =	[ 6, 5, 1, 9, 5, 1, $Rest ];
+d120 1
+a120 1
+$u_theme{ 1 .$Pitches } =	[ 6, 7, 8, 5, 3, 4, $Rest ];
+d135 10
+d149 2
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@d32 2
+a33 1
+$MaxPhrases =		50;
+d37 18
+a54 18
+$DefaultOctave =	"4";
+$DefaultKey =		"C";
+$DefaultMajor =		"maj";
+$DefaultSpeed =		"100";
+$DefaultTimesig =	"4";
+
+$Pitches =		"_Pitch";
+$Articulations =	"_Articulation";
+$Rhythms =		"_Rhythm";
+$Velocities =		"_Velocity";
+$Octave =		"_Octave";
+$Key =			"_Key";
+$Major = 		"_Major";
+$Measures =		"_Measures";
+$Instrument =		"_Instrument";
+$Channel =		"_Channel";
+$Speed =		"_Speed";
+$Timesig =		"_Timesignature";
+d56 2
+a57 2
+$Primary =		"Primary";
+$rest =			"rest";
+d59 1
+a59 1
+@@AllTypes =	($Pitches, $Articulations, $Rhythms, $Velocities, $Octave, $Key, $Major, $Measures, $Instrument);
+d63 9
+a71 9
+$PitchMnemonic =	"pitch";
+$ArticulationMnemonic =	"artic";
+$RhythmMnemonic =	"rhythm";
+$VelocityMnemonic =	"veloc";
+$KeyMnemonic =		"key";
+$MeasureMnemonic =	"measures";
+$InstrumentMnemonic =	"instrument";
+$SpeedMnemonic =	"speed";
+$TimesigMnemonic =	"timesig";
+d79 1
+a79 1
+$KeyChange =			20;
+d114 1
+a114 1
+$u_theme{ 0 .$Pitches } =	[ 6, 5, 1, 9, 5, 1, $rest ];
+d119 1
+a119 1
+$u_theme{ 1 .$Pitches } =	[ 6, 7, 8, 5, 3, 4, $rest ];
+@

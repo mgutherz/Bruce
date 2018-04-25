@@ -1,0 +1,55 @@
+head	1.1;
+access;
+symbols;
+locks
+	blj:1.1; strict;
+comment	@% @;
+
+
+1.1
+date	94.11.19.02.46.55;	author blj;	state Exp;
+branches;
+next	;
+
+
+desc
+@INITIAL CHECK-IN
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@#
+#
+# utils.pl
+#
+#
+
+
+#
+#
+# random
+#
+# given a number between 0 and 100, returns whether a random number
+# is less than or equal to the percentage.
+#
+#
+
+sub random {
+    local ($percent) = @@_;
+    if ($percent >= rand(100)) {
+	1;
+    } else {
+	0;
+    }
+}
+
+
+
+
+
+1;
+@

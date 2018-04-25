@@ -1,0 +1,282 @@
+#
+#
+# ear.pl
+#
+#
+
+
+
+sub init_ear {
+    my ($m, $n);
+
+    print STDERR "init_ear\n" if $DEBUG;
+    $Quantum = 25;
+    $Badstr = 'BAD';
+    $TotalSections = 0;
+    $Iterations = 1;
+    $BestSoFar = 1;
+
+    $halfsteps = {
+	"maj" . 0 => 0,
+	"maj" . 1 => 0,
+	"maj" . 2 => 2,
+	"maj" . 3 => 4,
+	"maj" . 4 => 5,
+	"maj" . 5 => 7,
+	"maj" . 6 => 9,
+	"maj" . 7 => 11,
+	"min" . 0 => 0,
+	"min" . 1 => 0,
+	"min" . 2 => 2,
+	"min" . 3 => 3,
+	"min" . 4 => 5,
+	"min" . 5 => 7,
+	"min" . 6 => 8,
+	"min" . 7 => 10,
+    };
+
+    #
+    # put everything into G#/Ab
+    #
+    $offsets = {
+	'G#' => 0,	'G' => -1,	'Gb' => -2,
+	'F#' => -2,	'F' => -3,	'Fb' => -4,
+	'E#' => -3,	'E' => -4,	'Eb' => -5,
+	'D#' => -5,	'D' => -6,	'Db' => -7,
+	'C#' => -7,	'C' => -8,	'Cb' => -9,
+	'B#' => -8,	'B' => -9,	'Bb' => -10,
+	'A#' => -10,	'A' => -11,	'Ab' => 0,
+    };
+
+    $MaxBadSections = {
+	0 => 20,
+	1 => 1,
+	2 => 1,
+	3 => 1,
+	4 => 1,
+	5 => 1,
+    };
+
+    unless (open (EAR_GENE, $EarGene)) {
+	print "Error: EAR cannot open file $EarGene \n" ;
+	return;
+    }
+    $PreviousGene = 0;
+    while (<EAR_GENE>) {
+	chop;
+	$ValidTransitions{ $_ } = $_;
+
+	$num = hex($_);
+	if ($PreviousGene) {
+	    $PreviousGene |= (($num >> 16) & 0xffff);
+
+	    $str = sprintf("%08lx", $PreviousGene);
+	    $ValidTransitions{ $str } = $str;
+	} else {
+	    $FirstGene = (($num << 16) & 0xffff0000);
+	}
+	$PreviousGene = (($num << 16) & 0xffff0000);
+    }
+    $FirstGene |= (($num >> 16) & 0xffff);
+    $str = sprintf("%08lx", $FirstGene);
+    $ValidTransitions{ $str } = $str;
+    #
+    # transitions to & from nothing are valid
+    #
+    $ValidTransitions{ 0 } = 0;
+    close(EAR_GENE);
+}
+
+
+
+
+
+
+sub feed_score_to_ear {
+    my ($x, $y, $i, $j, $sections, $start);
+
+    $start = 0;
+    $BadSections = 0;
+    $TotalTrans = 0;
+
+    for ($i=0; $i<=$TotalSections; $i++) {
+	$ToEar[ $i ] = 0;
+    }
+
+    for ($ID_start .. $ID-1) {
+	$start += $Phrases{ $_ . $Measures } * (100 / $Quantum);
+	$x = $Phrases{ $_ . $Pitches };
+	$y = $Phrases{ $_ . $Rhythms };
+	$Phrases{ $_ . $Modified } = 0;
+
+	$sections = 0;
+	for ($i=1; $i<=$x->[0]; $i++) {
+	    #
+	    # ignore grace notes (things that only last for a little bit)
+	    # an ugly consequence of this is that all fast sequences are valid.
+	    # oh well.  this makes sense, though, i think -- we do not want to
+	    # have more than three sequential notes to have to stack up
+	    #
+	    if ($y->[$i] >= 12.5) {
+		$ToEar[ int($sections / $Quantum) + $start ] |= &convert($Phrases{ $_ . $Key }, $Phrases{ $_ . $Major }, $x->[$i]) ;
+	    }
+	    $TotalSections = int($sections / $Quantum) + $start;
+	    $sections += $y->[$i];
+	    
+	    $BadList{ $TotalSections } = $_;
+	}
+    }
+
+    print STDERR "TotalSections: $TotalSections \n" if $DEBUG;
+
+    if ($DEBUG) {
+	my ($a);
+
+	print STDERR "BEGIN NOTE LIST\n" ;
+	for ($j=0; $j<$ID; $j++) {
+	    for (@NoteTypes) {
+		$a = $Phrases{ $j.$_ };
+		&print_array($a, $a->[0], 'NOTE-LIST');
+	    }
+	}
+	print STDERR "END NOTE LIST\n" ;
+
+	print STDERR "BEGIN TRANSITION LIST\n" ;
+	for ($j=0; $j<=$TotalSections; $j++) {
+	    &print_chord($j, $ToEar[$j]);
+	}
+	print STDERR "END TRANSITION LIST\n" ;
+    }
+
+    for ($i=0; $i<$TotalSections; &print_chord($j, $ToEar[$j])) {
+	do { $x = $ToEar[$i]; }
+	    until ($x || ++$i>=$TotalSections);
+
+	$j = $i;
+	$i++;
+
+	do { $y = $ToEar[$i]; }
+	    until ($y || ++$i>=$TotalSections);
+
+	$TotalTrans++;
+	return if $i >= $TotalSections;
+
+	$Check = $x | ($y << 16);
+	next if &good_transition($Check);
+
+	$ToEar[$i] |= 0x10000000;
+	$BadList{ $BadSections . $Badstr } = $BadList{ $i };
+	$BadSections++;
+    }
+
+}
+
+
+sub ear_still_listening {
+    if ($BadSections / $TotalTrans < $BestSoFar) {
+	$BestSoFar = $BadSections / $TotalTrans;
+	&save_this_score($Iterations);
+    }
+    if ($Iterations++ > $MaxIts) {
+	print STDERR "Best: ", $BestSoFar * 100, "\n";
+	return 0;
+    }
+    return 1;
+}
+
+sub ear_likes_it {
+    my ($result);
+
+    if ($MaxBadSections{ $TotalTrans }) {
+	$result = ($BadSections <= $MaxBadSections{ $TotalTrans });
+    } else {
+	$result = ((100 * $BadSections / $TotalTrans) <= $MaxBadSections{ 0 });
+    }
+    print STDERR "ear_likes_it: $BadSections Bad Sections out of $TotalTrans Total Transitions: ",
+		(100 * $BadSections / $TotalTrans), ($result) ? " (PASS) \n" : " (FAIL) \n" if $DEBUG2;
+    return $result;
+}
+
+
+
+#
+#
+# convert
+#
+# given a note value, turns it into a bit
+#
+#
+sub convert {
+    my ($key, $major, $note) = @_;
+
+    return 0 if $note eq $rest;
+
+    $note = ($note + 80) % 8;
+    $note = ($offsets->{$key} + $halfsteps->{ $major . $note } + 60) % 12;
+    return (1 << $note);
+}
+
+
+
+
+
+
+#
+#
+# good_transition
+#
+# given a transition (from == lower 2 bytes, to = upper 2 bytes)
+# it weeps through the list of okay transitions, to see if it
+# is a match or not.  returns boolean.
+#
+#
+sub good_transition {
+    my ($trans) = @_;
+    my ($key, $val);
+
+    #
+    # just in case the exact transition exists ...
+    #
+    return 1 if ($ValidTransitions{ $trans });
+
+    while (($key,$val) = each %ValidTransitions) {
+	if ((hex($val) & $trans) == $trans) {
+	    return 1;
+	}
+    }
+
+    return 0;
+}
+
+
+
+
+
+sub print_chord {
+    my ($q, $chord) = @_;
+
+    return unless $DEBUG2;
+
+    print STDERR "m ", int($q / (100 / $Quantum)), " b ", 1 + $q % (100 / $Quantum);
+    printf(STDERR ", %03lx:\t ", $chord & 0xfff) ;
+    print STDERR "root "	if ($chord & 1);
+    print STDERR "dim2 "	if ($chord & (1 << 1));
+    print STDERR "2maj "	if ($chord & (1 << 2));
+    print STDERR "3min "	if ($chord & (1 << 3));
+    print STDERR "3maj "	if ($chord & (1 << 4));
+    print STDERR "4th "		if ($chord & (1 << 5));
+    print STDERR "trit "	if ($chord & (1 << 6));
+    print STDERR "5th "		if ($chord & (1 << 7));
+    print STDERR "6min "	if ($chord & (1 << 8));
+    print STDERR "6maj "	if ($chord & (1 << 9));
+    print STDERR "7min "	if ($chord & (1 << 10));
+    print STDERR "7maj "	if ($chord & (1 << 11));
+    print STDERR "\tBAD"	if ($chord & 0x10000000);
+    print STDERR "\n" ;
+}
+
+
+
+
+
+1;
