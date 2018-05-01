@@ -1,0 +1,697 @@
+perl v3.pl
+perl v3.pl
+init_composer
+init_ear
+Error: EAR cannot open file Ear.Gene.1
+Error: EAR cannot open file Ear.Gene.F
+Valid Genomes: 0 
+init_output
+init_themes
+init_variations 
+copy_theme: fromid 0, toid 0 
+copy_theme _Pitch : 1 3 5 -1 1 2 1 
+copy_theme _Articulation : 100 100 100 100 100 100 100 
+copy_theme _Rhythm : 100 50 50 75 12.5 12.5 100 
+copy_theme _Velocity : 90 90 90 90 90 90 90 
+copy_theme _Octave : 
+copy_theme _Key : 
+copy_theme _Major : 
+copy_theme _Measures : 
+random_measures 
+copy_theme _Channel : 
+create_score
+PHRASE 0
+compose_phrase
+random_channel 
+vary_pitches 
+print_array from vary_pitches: len 8 array: 7, 1 3 5 -1 1 2 1
+vary_articulations 
+print_array from vary_artic: len 8 array: 7, 100 100 100 100 100 100 100
+vary_rhythms 
+print_array from vary_rhythms: len 8 array: 7, 100 50 50 75 12.5 12.5 100
+vary_velocities 
+print_array from vary_velocities: len 8 array: 7, 90 90 90 90 90 90 90
+PHRASE 1
+compose_phrase
+random_channel 
+random_measures 
+vary_octave 
+vary_pitches 
+print_array from vary_pitches: len 7 array: 7, 1 3 5 -1 1 2 1
+vary_articulations 
+print_array from vary_artic: len 7 array: 7, 100 100 100 100 100 100 100
+vary_rhythms 
+print_array from vary_rhythms: len 7 array: 7, 100 50 50 75 12.5 12.5 100
+vary_velocities 
+print_array from vary_velocities: len 7 array: 7, 90 90 90 90 90 90 90
+PHRASE 2
+do_development
+harmonize_last_phrase
+copy_theme: fromid 1, toid 2 
+copy_theme _Pitch : 5 6 5 5 7 9 3 
+copy_theme _Articulation : 148 148 148 148 148 148 148 
+copy_theme _Rhythm : 12.5 100 100 50 50 75 12.5 
+copy_theme _Velocity : 99 99 99 99 99 99 99 
+copy_theme _Octave : 2
+copy_theme _Key : C
+copy_theme _Major : dor
+copy_theme _Measures : 0
+random_measures 
+copy_theme _Channel : 1
+modify_pitches 
+multiply_pitches 
+print_array from multiply_pitches: len 7 array: 7, 5 6 5 5 7 9 3
+PHRASE 3
+compose_phrase
+random_channel 
+random_measures 
+vary_pitches 
+print_array from vary_pitches: len 4 array: 7, 1 3 5 -1 1 2 1
+vary_articulations 
+print_array from vary_artic: len 4 array: 7, 100 100 100 100 100 100 100
+vary_rhythms 
+print_array from vary_rhythms: len 4 array: 7, 100 50 50 75 12.5 12.5 100
+vary_velocities 
+print_array from vary_velocities: len 4 array: 7, 90 90 90 90 90 90 90
+PHRASE 4
+compose_phrase
+random_channel 
+random_measures 
+vary_pitches 
+print_array from vary_pitches: len 4 array: 7, 1 3 5 -1 1 2 1
+vary_articulations 
+print_array from vary_artic: len 4 array: 7, 100 100 100 100 100 100 100
+vary_rhythms 
+print_array from vary_rhythms: len 4 array: 7, 100 50 50 75 12.5 12.5 100
+vary_velocities 
+print_array from vary_velocities: len 4 array: 7, 90 90 90 90 90 90 90
+PHRASE 5
+compose_phrase
+random_channel 
+random_measures 
+vary_pitches 
+print_array from vary_pitches: len 7 array: 7, 1 3 5 -1 1 2 1
+vary_articulations 
+print_array from vary_artic: len 7 array: 7, 100 100 100 100 100 100 100
+vary_rhythms 
+print_array from vary_rhythms: len 7 array: 7, 100 50 50 75 12.5 12.5 100
+vary_velocities 
+print_array from vary_velocities: len 7 array: 7, 90 90 90 90 90 90 90
+PHRASE 6
+compose_phrase
+random_channel 
+random_measures 
+vary_pitches 
+print_array from vary_pitches: len 3 array: 7, 1 3 5 -1 1 2 1
+vary_articulations 
+print_array from vary_artic: len 3 array: 7, 100 100 100 100 100 100 100
+vary_rhythms 
+print_array from vary_rhythms: len 3 array: 7, 100 50 50 75 12.5 12.5 100
+vary_velocities 
+print_array from vary_velocities: len 3 array: 7, 90 90 90 90 90 90 90
+PHRASE 7
+do_special_event
+create_mod_secondary
+modify_theme: Themes index 0, to Themes index 0 
+print_array from modify_theme: len 0 array: 7, 1 3 5 -1 1 2 1
+vary_pitches 
+print_array from vary_pitches: len 7 array: 7, 1 3 5 -1 1 2 1
+vary_articulations 
+print_array from vary_artic: len 7 array: 7, 100 100 100 100 100 100 100
+vary_rhythms 
+print_array from vary_rhythms: len 7 array: 7, 100 50 50 75 12.5 12.5 100
+vary_velocities 
+print_array from vary_velocities: len 7 array: 7, 90 90 90 90 90 90 90
+random_octave 
+random_key 
+random_major 
+random_channel 
+copy_theme: fromid 0, toid 1 
+copy_theme _Pitch : 1 3 4 3 3 5 7 
+copy_theme _Articulation : 52 52 52 52 52 52 52 
+copy_theme _Rhythm : 18.75 150 150 75 75 112.5 18.75 
+copy_theme _Velocity : 6 6 6 6 6 6 6 
+copy_theme _Octave : 5
+copy_theme _Key : E#
+copy_theme _Major : maj
+copy_theme _Measures : 4
+copy_theme _Channel : 2
+PHRASE 7
+do_development
+repeat_section_modified
+modify_theme: Phrases index 0, to Phrases index 7 
+print_array from modify_theme: len 0 array: 8, 7 6 6 8 10 4 6 7
+vary_pitches 
+print_array from vary_pitches: len 8 array: 8, 7 6 6 8 10 4 6 7
+vary_articulations 
+print_array from vary_artic: len 8 array: 8, 99 99 99 99 99 99 99 99
+vary_rhythms 
+print_array from vary_rhythms: len 8 array: 8, 33.3333333333333 33.3333333333333 50 8.33333333333333 8.33333333333333 66.6666666666667 66.6666666666667 33.3333333333333
+vary_velocities 
+print_array from vary_velocities: len 8 array: 8, 123 123 123 123 123 123 123 123
+random_measures 
+PHRASE 8
+modify_theme: Phrases index 1, to Phrases index 8 
+print_array from modify_theme: len 0 array: 7, 5 6 5 5 7 9 3
+vary_pitches 
+print_array from vary_pitches: len 7 array: 7, 5 6 5 5 7 9 3
+vary_articulations 
+print_array from vary_artic: len 7 array: 7, 148 148 148 148 148 148 148
+vary_rhythms 
+print_array from vary_rhythms: len 7 array: 7, 12.5 100 100 50 50 75 12.5
+vary_velocities 
+print_array from vary_velocities: len 7 array: 7, 99 99 99 99 99 99 99
+random_measures 
+PHRASE 9
+modify_theme: Phrases index 2, to Phrases index 9 
+print_array from modify_theme: len 0 array: 7, 4 5 4 4 6 8 2
+vary_pitches 
+print_array from vary_pitches: len 7 array: 7, 4 5 4 4 6 8 2
+vary_articulations 
+print_array from vary_artic: len 7 array: 7, 148 148 148 148 148 148 148
+vary_rhythms 
+print_array from vary_rhythms: len 7 array: 7, 12.5 100 100 50 50 75 12.5
+vary_velocities 
+print_array from vary_velocities: len 7 array: 7, 99 99 99 99 99 99 99
+random_measures 
+PHRASE 10
+TotalSections: 596 
+TRANSITION: 00000a06 -> 00000a56 
+TRANSITION VOTES AGAINST: [ ]
+TRANSITION: 00000a56 -> 00000ad6 
+TRANSITION VOTES AGAINST: [ 0 ]
+TRANSITION: 00000ad6 -> 00000a96 
+TRANSITION VOTES AGAINST: [ 0 ]
+TRANSITION: 00000a96 -> 00000a16 
+TRANSITION VOTES AGAINST: [ ]
+TRANSITION: 00000a16 -> 00000a12 
+TRANSITION VOTES AGAINST: [ ]
+TRANSITION: 00000a12 -> 00000a02 
+TRANSITION VOTES AGAINST: [ ]
+TRANSITION: 00000a02 -> 00000a00 
+TRANSITION VOTES AGAINST: [ ]
+modify_score
+create_new_primary
+create_theme 
+random_pitches 
+print_array from random_pitches: len 8 array: 7, 1 3 4 3 3 5 7
+random_articulations 
+print_array from random_artic: len 8 array: 7, 52 52 52 52 52 52 52
+random_rhythms 
+print_array from random_rhythms: len 8 array: 7, 18.75 150 150 75 75 112.5 18.75
+random_velocities 
+print_array from random_velocities: len 8 array: 7, 6 6 6 6 6 6 6
+vary_octave 
+vary_key 
+vary_major 
+random_channel 
+copy_theme: fromid 0, toid 2 
+copy_theme _Pitch : 3 3 8 12 1 10 29 10 
+copy_theme _Articulation : 58 66 35 54 77 28 46 29 
+copy_theme _Rhythm : 37.5 75 300 28.125 450 225 37.5 112.5 
+copy_theme _Velocity : 3 6 6 7 5 7 3 5 
+copy_theme _Octave : 2
+copy_theme _Key : F
+copy_theme _Major : min
+copy_theme _Measures : 3
+copy_theme _Channel : 1
+random_measures 
+TotalSections: 596 
+TRANSITION: 00000a06 -> 00000a56 
+TRANSITION VOTES AGAINST: [ ]
+TRANSITION: 00000a56 -> 00000ad6 
+TRANSITION VOTES AGAINST: [ 0 ]
+TRANSITION: 00000ad6 -> 00000a96 
+TRANSITION VOTES AGAINST: [ 0 ]
+TRANSITION: 00000a96 -> 00000a16 
+TRANSITION VOTES AGAINST: [ ]
+TRANSITION: 00000a16 -> 00000a12 
+TRANSITION VOTES AGAINST: [ ]
+TRANSITION: 00000a12 -> 00000a02 
+TRANSITION VOTES AGAINST: [ ]
+TRANSITION: 00000a02 -> 00000a00 
+TRANSITION VOTES AGAINST: [ ]
+modify_score
+create_new_primary
+create_theme 
+random_pitches 
+print_array from random_pitches: len 6 array: 8, 3 3 8 12 1 10 29 10
+random_articulations 
+print_array from random_artic: len 6 array: 8, 58 66 35 54 77 28 46 29
+random_rhythms 
+print_array from random_rhythms: len 6 array: 8, 37.5 75 300 28.125 450 225 37.5 112.5
+random_velocities 
+print_array from random_velocities: len 6 array: 8, 3 6 6 7 5 7 3 5
+vary_octave 
+vary_key 
+vary_major 
+random_channel 
+copy_theme: fromid 0, toid 3 
+copy_theme _Pitch : 14 6 30 5 8 10 
+copy_theme _Articulation : 93 94 62 19 61 18 
+copy_theme _Rhythm : 600 300 450 75 18.75 9.375 
+copy_theme _Velocity : 4 4 6 3 8 4 
+copy_theme _Octave : 2
+copy_theme _Key : B
+copy_theme _Major : maj
+copy_theme _Measures : 6
+copy_theme _Channel : 2
+modify_rhythms 
+print_array from modify_rhythms: len  array: ,
+TotalSections: 596 
+TRANSITION: 00000a06 -> 00000a56 
+TRANSITION VOTES AGAINST: [ ]
+TRANSITION: 00000a56 -> 00000ad6 
+TRANSITION VOTES AGAINST: [ 0 ]
+TRANSITION: 00000ad6 -> 00000a96 
+TRANSITION VOTES AGAINST: [ 0 ]
+TRANSITION: 00000a96 -> 00000a16 
+TRANSITION VOTES AGAINST: [ ]
+TRANSITION: 00000a16 -> 00000a12 
+TRANSITION VOTES AGAINST: [ ]
+TRANSITION: 00000a12 -> 00000a02 
+TRANSITION VOTES AGAINST: [ ]
+TRANSITION: 00000a02 -> 00000a00 
+TRANSITION VOTES AGAINST: [ ]
+modify_score
+create_new_primary
+create_theme 
+random_pitches 
+print_array from random_pitches: len 6 array: 6, 14 6 30 5 8 10
+random_articulations 
+print_array from random_artic: len 6 array: 6, 93 94 62 19 61 18
+random_rhythms 
+print_array from random_rhythms: len 6 array: 6, 600 300 450 75 18.75 9.375
+random_velocities 
+print_array from random_velocities: len 6 array: 6, 4 4 6 3 8 4
+vary_octave 
+vary_key 
+vary_major 
+random_channel 
+copy_theme: fromid 0, toid 4 
+copy_theme _Pitch : 14 5 15 6 11 10 
+copy_theme _Articulation : 57 68 14 94 80 51 
+copy_theme _Rhythm : 12.5 18.75 18.75 450 28.125 900 
+copy_theme _Velocity : 2 2 2 4 7 4 
+copy_theme _Octave : 2
+copy_theme _Key : E
+copy_theme _Major : maj
+copy_theme _Measures : 1
+copy_theme _Channel : 1
+modify_rhythms 
+print_array from modify_rhythms: len  array: ,
+TotalSections: 596 
+TRANSITION: 00000a06 -> 00000a56 
+TRANSITION VOTES AGAINST: [ ]
+TRANSITION: 00000a56 -> 00000ad6 
+TRANSITION VOTES AGAINST: [ 0 ]
+TRANSITION: 00000ad6 -> 00000a96 
+TRANSITION VOTES AGAINST: [ 0 ]
+TRANSITION: 00000a96 -> 00000a16 
+TRANSITION VOTES AGAINST: [ ]
+TRANSITION: 00000a16 -> 00000a12 
+TRANSITION VOTES AGAINST: [ ]
+TRANSITION: 00000a12 -> 00000a02 
+TRANSITION VOTES AGAINST: [ ]
+TRANSITION: 00000a02 -> 00000a00 
+TRANSITION VOTES AGAINST: [ ]
+modify_score
+create_new_primary
+create_theme 
+random_pitches 
+print_array from random_pitches: len 3 array: 7, 1 3 4 3 3 5 7
+random_articulations 
+print_array from random_artic: len 3 array: 7, 52 52 52 52 52 52 52
+random_rhythms 
+print_array from random_rhythms: len 3 array: 7, 18.75 150 150 75 75 112.5 18.75
+random_velocities 
+print_array from random_velocities: len 3 array: 7, 6 6 6 6 6 6 6
+vary_octave 
+vary_key 
+vary_major 
+random_channel 
+copy_theme: fromid 0, toid 5 
+copy_theme _Pitch : 2 11 7 
+copy_theme _Articulation : 38 45 63 
+copy_theme _Rhythm : 75 75 18.75 
+copy_theme _Velocity : 3 5 8 
+copy_theme _Octave : 9
+copy_theme _Key : Gb
+copy_theme _Major : maj
+copy_theme _Measures : 5
+copy_theme _Channel : 1
+modify_rhythms 
+print_array from modify_rhythms: len  array: ,
+random_measures 
+TotalSections: 596 
+TRANSITION: 00000a06 -> 00000a56 
+TRANSITION VOTES AGAINST: [ ]
+TRANSITION: 00000a56 -> 00000ad6 
+TRANSITION VOTES AGAINST: [ 0 ]
+TRANSITION: 00000ad6 -> 00000a96 
+TRANSITION VOTES AGAINST: [ 0 ]
+TRANSITION: 00000a96 -> 00000a16 
+TRANSITION VOTES AGAINST: [ ]
+TRANSITION: 00000a16 -> 00000a12 
+TRANSITION VOTES AGAINST: [ ]
+TRANSITION: 00000a12 -> 00000a02 
+TRANSITION VOTES AGAINST: [ ]
+TRANSITION: 00000a02 -> 00000a00 
+TRANSITION VOTES AGAINST: [ ]
+modify_score
+create_new_primary
+create_theme 
+random_pitches 
+print_array from random_pitches: len 6 array: 6, 14 6 30 5 8 10
+random_articulations 
+print_array from random_artic: len 6 array: 6, 93 94 62 19 61 18
+random_rhythms 
+print_array from random_rhythms: len 6 array: 6, 600 300 450 75 18.75 9.375
+random_velocities 
+print_array from random_velocities: len 6 array: 6, 4 4 6 3 8 4
+vary_octave 
+vary_key 
+vary_major 
+random_channel 
+copy_theme: fromid 0, toid 6 
+copy_theme _Pitch : 10 14 1 6 2 9 
+copy_theme _Articulation : 40 125 89 19 88 59 
+copy_theme _Rhythm : 300 112.5 150 900 225 1350 
+copy_theme _Velocity : 3 3 3 4 3 7 
+copy_theme _Octave : 0
+copy_theme _Key : E
+copy_theme _Major : min
+copy_theme _Measures : 5
+copy_theme _Channel : 1
+TotalSections: 596 
+TRANSITION: 00000a06 -> 00000a56 
+TRANSITION VOTES AGAINST: [ ]
+TRANSITION: 00000a56 -> 00000ad6 
+TRANSITION VOTES AGAINST: [ 0 ]
+TRANSITION: 00000ad6 -> 00000a96 
+TRANSITION VOTES AGAINST: [ 0 ]
+TRANSITION: 00000a96 -> 00000a16 
+TRANSITION VOTES AGAINST: [ ]
+TRANSITION: 00000a16 -> 00000a12 
+TRANSITION VOTES AGAINST: [ ]
+TRANSITION: 00000a12 -> 00000a02 
+TRANSITION VOTES AGAINST: [ ]
+TRANSITION: 00000a02 -> 00000a00 
+TRANSITION VOTES AGAINST: [ ]
+modify_score
+create_new_primary
+create_theme 
+random_pitches 
+print_array from random_pitches: len 5 array: 3, 2 11 7
+random_articulations 
+print_array from random_artic: len 5 array: 3, 38 45 63
+random_rhythms 
+print_array from random_rhythms: len 5 array: 3, 75 75 18.75
+random_velocities 
+print_array from random_velocities: len 5 array: 3, 3 5 8
+vary_octave 
+vary_key 
+vary_major 
+random_channel 
+copy_theme: fromid 0, toid 7 
+copy_theme _Pitch : 0 11 10 1 2 
+copy_theme _Articulation : 32 39 25 21 55 
+copy_theme _Rhythm : 112.5 300 75 112.5 18.75 
+copy_theme _Velocity : 5 2 7 3 7 
+copy_theme _Octave : 9
+copy_theme _Key : F#
+copy_theme _Major : min
+copy_theme _Measures : 7
+copy_theme _Channel : 2
+random_measures 
+TotalSections: 596 
+TRANSITION: 00000a06 -> 00000a56 
+TRANSITION VOTES AGAINST: [ ]
+TRANSITION: 00000a56 -> 00000ad6 
+TRANSITION VOTES AGAINST: [ 0 ]
+TRANSITION: 00000ad6 -> 00000a96 
+TRANSITION VOTES AGAINST: [ 0 ]
+TRANSITION: 00000a96 -> 00000a16 
+TRANSITION VOTES AGAINST: [ ]
+TRANSITION: 00000a16 -> 00000a12 
+TRANSITION VOTES AGAINST: [ ]
+TRANSITION: 00000a12 -> 00000a02 
+TRANSITION VOTES AGAINST: [ ]
+TRANSITION: 00000a02 -> 00000a00 
+TRANSITION VOTES AGAINST: [ ]
+modify_score
+create_new_primary
+create_theme 
+random_pitches 
+print_array from random_pitches: len 6 array: 5, 0 11 10 1 2
+random_articulations 
+print_array from random_artic: len 6 array: 5, 32 39 25 21 55
+random_rhythms 
+print_array from random_rhythms: len 6 array: 5, 112.5 300 75 112.5 18.75
+random_velocities 
+print_array from random_velocities: len 6 array: 5, 5 2 7 3 7
+vary_octave 
+vary_key 
+vary_major 
+random_channel 
+copy_theme: fromid 0, toid 8 
+copy_theme _Pitch : 1 4 5 7 2 14 
+copy_theme _Articulation : 26 22 11 20 72 19 
+copy_theme _Rhythm : 168.75 450 225 112.5 168.75 150 
+copy_theme _Velocity : 2 6 7 10 1 2 
+copy_theme _Octave : 5
+copy_theme _Key : Eb
+copy_theme _Major : min
+copy_theme _Measures : 0
+random_measures 
+copy_theme _Channel : 1
+random_measures 
+TotalSections: 596 
+TRANSITION: 00000a06 -> 00000a56 
+TRANSITION VOTES AGAINST: [ ]
+TRANSITION: 00000a56 -> 00000ad6 
+TRANSITION VOTES AGAINST: [ 0 ]
+TRANSITION: 00000ad6 -> 00000a96 
+TRANSITION VOTES AGAINST: [ 0 ]
+TRANSITION: 00000a96 -> 00000a16 
+TRANSITION VOTES AGAINST: [ ]
+TRANSITION: 00000a16 -> 00000a12 
+TRANSITION VOTES AGAINST: [ ]
+TRANSITION: 00000a12 -> 00000a02 
+TRANSITION VOTES AGAINST: [ ]
+TRANSITION: 00000a02 -> 00000a00 
+TRANSITION VOTES AGAINST: [ ]
+modify_score
+create_new_primary
+create_theme 
+random_pitches 
+print_array from random_pitches: len 6 array: 5, 0 11 10 1 2
+random_articulations 
+print_array from random_artic: len 6 array: 5, 32 39 25 21 55
+random_rhythms 
+print_array from random_rhythms: len 6 array: 5, 112.5 300 75 112.5 18.75
+random_velocities 
+print_array from random_velocities: len 6 array: 5, 5 2 7 3 7
+vary_octave 
+vary_key 
+vary_major 
+random_channel 
+copy_theme: fromid 0, toid 9 
+copy_theme _Pitch : 8 1 29 0 9 6 
+copy_theme _Articulation : 28 25 39 58 16 40 
+copy_theme _Rhythm : 75 56.25 450 337.5 4.6875 112.5 
+copy_theme _Velocity : 10 9 3 1 5 2 
+copy_theme _Octave : 3
+copy_theme _Key : Gb
+copy_theme _Major : min
+copy_theme _Measures : 5
+copy_theme _Channel : 1
+modify_pitches 
+transpose_pitches 
+print_array from transpose_pitches: len  array: ,
+modify_rhythms 
+print_array from modify_rhythms: len  array: ,
+random_measures 
+TotalSections: 596 
+TRANSITION: 00000a06 -> 00000a56 
+TRANSITION VOTES AGAINST: [ ]
+TRANSITION: 00000a56 -> 00000ad6 
+TRANSITION VOTES AGAINST: [ 0 ]
+TRANSITION: 00000ad6 -> 00000a96 
+TRANSITION VOTES AGAINST: [ 0 ]
+TRANSITION: 00000a96 -> 00000a16 
+TRANSITION VOTES AGAINST: [ ]
+TRANSITION: 00000a16 -> 00000a12 
+TRANSITION VOTES AGAINST: [ ]
+TRANSITION: 00000a12 -> 00000a02 
+TRANSITION VOTES AGAINST: [ ]
+TRANSITION: 00000a02 -> 00000a00 
+TRANSITION VOTES AGAINST: [ ]
+modify_score
+create_new_primary
+create_theme 
+random_pitches 
+print_array from random_pitches: len 7 array: 3, 2 11 7
+random_articulations 
+print_array from random_artic: len 7 array: 3, 38 45 63
+random_rhythms 
+print_array from random_rhythms: len 7 array: 3, 75 75 18.75
+random_velocities 
+print_array from random_velocities: len 7 array: 3, 3 5 8
+vary_octave 
+vary_key 
+vary_major 
+random_channel 
+copy_theme: fromid 0, toid 10 
+copy_theme _Pitch : 8 13 10 12 12 13 6 
+copy_theme _Articulation : 57 55 38 42 21 54 33 
+copy_theme _Rhythm : 18.75 225 12.5 37.5 112.5 112.5 112.5 
+copy_theme _Velocity : 10 8 1 7 1 3 1 
+copy_theme _Octave : 0
+copy_theme _Key : C#
+copy_theme _Major : min
+copy_theme _Measures : 1
+copy_theme _Channel : 1
+TotalSections: 596 
+TRANSITION: 00000a06 -> 00000a56 
+TRANSITION VOTES AGAINST: [ ]
+TRANSITION: 00000a56 -> 00000ad6 
+TRANSITION VOTES AGAINST: [ 0 ]
+TRANSITION: 00000ad6 -> 00000a96 
+TRANSITION VOTES AGAINST: [ 0 ]
+TRANSITION: 00000a96 -> 00000a16 
+TRANSITION VOTES AGAINST: [ ]
+TRANSITION: 00000a16 -> 00000a12 
+TRANSITION VOTES AGAINST: [ ]
+TRANSITION: 00000a12 -> 00000a02 
+TRANSITION VOTES AGAINST: [ ]
+TRANSITION: 00000a02 -> 00000a00 
+TRANSITION VOTES AGAINST: [ ]
+modify_score
+create_new_primary
+create_theme 
+random_pitches 
+print_array from random_pitches: len 5 array: 7, 1 3 4 3 3 5 7
+random_articulations 
+print_array from random_artic: len 5 array: 7, 52 52 52 52 52 52 52
+random_rhythms 
+print_array from random_rhythms: len 5 array: 7, 18.75 150 150 75 75 112.5 18.75
+random_velocities 
+print_array from random_velocities: len 5 array: 7, 6 6 6 6 6 6 6
+vary_octave 
+vary_key 
+vary_major 
+random_channel 
+copy_theme: fromid 0, toid 11 
+copy_theme _Pitch : 10 10 28 30 10 
+copy_theme _Articulation : 69 38 50 46 37 
+copy_theme _Rhythm : 112.5 112.5 18.75 12.5 150 
+copy_theme _Velocity : 3 3 8 7 3 
+copy_theme _Octave : 7
+copy_theme _Key : G
+copy_theme _Major : min
+copy_theme _Measures : 1
+copy_theme _Channel : 2
+random_pitches 
+print_array from random_pitches: len  array: ,
+vary_rhythms 
+print_array from vary_rhythms: len  array: ,
+random_measures 
+random_measures 
+TotalSections: 596 
+TRANSITION: 00000a06 -> 00000a56 
+TRANSITION VOTES AGAINST: [ ]
+TRANSITION: 00000a56 -> 00000ad6 
+TRANSITION VOTES AGAINST: [ 0 ]
+TRANSITION: 00000ad6 -> 00000a96 
+TRANSITION VOTES AGAINST: [ 0 ]
+TRANSITION: 00000a96 -> 00000a16 
+TRANSITION VOTES AGAINST: [ ]
+TRANSITION: 00000a16 -> 00000a12 
+TRANSITION VOTES AGAINST: [ ]
+TRANSITION: 00000a12 -> 00000a02 
+TRANSITION VOTES AGAINST: [ ]
+TRANSITION: 00000a02 -> 00000a00 
+TRANSITION VOTES AGAINST: [ ]
+Best: 25
+Defaulting to variations mode
+0, comment Lowest BadPercentage = 25 ; 
+0, comment Iteration Type = 11 ; 
+1, clear clear ; 
+2, speed 100 ; 
+3, timesig 4 ; 
+PHRASE 0
+4, key 4 C dor ; 
+5, measures 0 ; 
+6, 2: pitch 8 7 6 6 8 10 4 6 7 ; 
+7, 2: artic 8 99 99 99 99 99 99 99 99 ; 
+8, 2: rhyth 8 33.3333333333333 33.3333333333333 50 8.33333333333333 8.33333333333333 66.6666666666667 66.6666666666667 33.3333333333333 ; 
+9, 2: veloc 8 123 123 123 123 123 123 123 123 ; 
+PHRASE 1
+10, key 2 C dor ; 
+11, measures 0 ; 
+12, 1: pitch 7 5 6 5 5 7 9 3 ; 
+13, 1: artic 7 148 148 148 148 148 148 148 ; 
+14, 1: rhyth 7 12.5 100 100 50 50 75 12.5 ; 
+15, 1: veloc 7 99 99 99 99 99 99 99 ; 
+PHRASE 2
+16, key 2 C dor ; 
+17, measures 0 ; 
+18, 2: pitch 7 4 5 4 4 6 8 2 ; 
+19, 2: artic 7 148 148 148 148 148 148 148 ; 
+20, 2: rhyth 7 12.5 100 100 50 50 75 12.5 ; 
+21, 2: veloc 7 99 99 99 99 99 99 99 ; 
+PHRASE 3
+22, key 2 C dor ; 
+23, measures 2 ; 
+24, 1: pitch 4 5 6 5 5 ; 
+25, 1: artic 4 98 98 98 98 ; 
+26, 1: rhyth 4 37.5 6.25 6.25 50 ; 
+27, 1: veloc 4 51 51 51 51 ; 
+PHRASE 4
+28, key 2 C dor ; 
+29, measures 1 ; 
+30, 1: pitch 4 9 3 5 6 ; 
+31, 1: artic 4 93 93 93 93 ; 
+32, 1: rhyth 4 100 100 50 50 ; 
+33, 1: veloc 4 123 123 123 123 ; 
+PHRASE 5
+34, key 2 C dor ; 
+35, measures 0 ; 
+36, 1: pitch 7 29 31 25 27 28 27 27 ; 
+37, 1: artic 7 89 89 89 89 89 89 89 ; 
+38, 1: rhyth 7 18.75 150 150 75 75 112.5 18.75 ; 
+39, 1: veloc 7 2 2 2 2 2 2 2 ; 
+PHRASE 6
+40, key 2 C dor ; 
+41, measures 3 ; 
+42, 1: pitch 3 0 31 31 ; 
+43, 1: artic 3 122 122 122 ; 
+44, 1: rhyth 3 100 100 50 ; 
+45, 1: veloc 3 54 54 54 ; 
+PHRASE 7
+46, key 4 C dor ; 
+47, measures 0 ; 
+48, 2: pitch 8 4 4 3 3 5 7 1 3 ; 
+49, 2: artic 8 50 50 50 50 50 50 50 50 ; 
+50, 2: rhyth 8 16.6666666666667 16.6666666666667 16.6666666666667 25 4.16666666666667 4.16666666666667 33.3333333333333 33.3333333333333 ; 
+51, 2: veloc 8 53 53 53 53 53 53 53 53 ; 
+PHRASE 8
+52, key 2 C dor ; 
+53, measures 0 ; 
+54, 1: pitch 7 3 29 31 0 31 31 1 ; 
+55, 1: artic 7 199 199 199 199 199 199 199 ; 
+56, 1: rhyth 7 18.75 3.125 3.125 25 25 12.5 12.5 ; 
+57, 1: veloc 7 107 107 107 107 107 107 107 ; 
+PHRASE 9
+58, key 2 C dor ; 
+59, measures 0 ; 
+60, 2: pitch 7 1 27 29 30 29 29 31 ; 
+61, 2: artic 7 193 193 193 193 193 193 193 ; 
+62, 2: rhyth 7 66.6666666666667 33.3333333333333 33.3333333333333 50 8.33333333333333 8.33333333333333 66.6666666666667 ; 
+63, 2: veloc 7 114 114 114 114 114 114 114 ; 
+64, finis 10;
+65, start 0; 
+66, start 1; 
+
+e:\Markov\Bruce\variations>
