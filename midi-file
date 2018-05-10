@@ -1,22 +1,38 @@
-<simple>
-MIDI::Opus->new({
+http://search.cpan.org/~conklin/MIDI-Perl-0.83/
+
+<gamma>
+
+ #('note_on', dtime, channel, note, velocity)
+
+my $opus = MIDI::Opus->new({
   'format' => 1,
-  'ticks'  => 600, # quarter note
+  'ticks'  => 600,
   'tracks' => [ ],  # 1 tracks (not dumped)
 });
 
- #('note_on', dtime, channel, note, velocity)
- 
-Tracks: 1
-    MIDI::Track->new({
+my $track = MIDI::Track->new({
       'type' => 'MTrk',
       'events' => [  # 652 events.
         ['control_change', 0, 13, 7, 74],
         ['patch_change', 0, 13, 33],
         ['note_on', 0, 13, 34, 80],
         ['note_on', 480, 13, 34, 0],
-        ['note_on', 120, 13, 38, 80],
-      
+        ['note_on', 160, 13, 34, 0],
+      ]
+});
+
+
+push(@{ $opus->tracks_r }, $track );
+
+$opus->dump({'flat'});
+
+
+my @tracks=$opus->tracks();
+printf("Tracks: %d\n",scalar @tracks);
+
+$track->dump();
+</gamma code>      
+
 <I put a spell>      
 MIDI::Opus->new({
   'format' => 0,
