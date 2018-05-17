@@ -1,0 +1,554 @@
+$ cat StandardMidiFileWriter.java
+import java.io.DataOutputStream; 
+import java.io.FileOutputStream; 
+import java.io.OutputStream; 
+import java.io.IOException; 
+import java.io.File; 
+ 
+import javax.sound.midi.MidiEvent; 
+import javax.sound.midi.MidiMessage; 
+import javax.sound.midi.ShortMessage; 
+import javax.sound.midi.SysexMessage; 
+import javax.sound.midi.MetaMessage; 
+import javax.sound.midi.Sequence; 
+import javax.sound.midi.Track; 
+import javax.sound.midi.spi.MidiFileWriter; 
+ 
+ 
+ 
+ 
+/** Writer for Standard Midi Files.
+ This writer can write type 0 and type 1 files. It cannot write type 
+ 2 files. 
+ */ 
+public class StandardMidiFileWriter 
+extends MidiFileWriter 
+{ 
+ /** TODO:  */ 
+ public static boolean  USE_RUNNING_STATUS = true; 
+ 
+ /** TODO:  */ 
+ public static boolean  CANCEL_RUNNING_STATUS_ON_META_AND_SYSEX = true; 
+public static final int HEADER_MAGIC = 0x4d546864; 
+public static final int TRACK_MAGIC = 0x4d54726b;
+ 
+ 
+ 
+ /** Return supported MIDI file types.
+  This writer supports Standard MIDI File (SMF) types 0 and 1. 
+  So these numbers are returned here. 
+ 
+  @return an array of supported SMF types. 
+ */ 
+ public int[] getMidiFileTypes() 
+ { 
+  return new int[]{0, 1}; 
+ } 
+ 
+ 
+ 
+ /** Return the supported MIDI file types for a given Sequence.
+  This writer supports Standard MIDI File (SMF) types 0 and 1. 
+  Depending on the Sequence, either 0 or 1 is returned. 
+ 
+  @return and array of supported SMF types. It contains 0 if 
+  the Sequence has one track, 1 otherwise. 
+  */ 
+ public int[] getMidiFileTypes(Sequence sequence) 
+ { 
+  Track[] tracks = sequence.getTracks(); 
+  if (tracks.length == 1) 
+  { 
+   return new int[]{0}; 
+  } 
+  else 
+  { 
+   return new int[]{1}; 
+  } 
+ } 
+ 
+ 
+ 
+ /** Write a Sequence as Standard MIDI File (SMF) to an OutputStream.
+  A byte stream representing the passed Sequence is written 
+  to the output stream in the given file type. 
+ 
+  @return The number of bytes written to the output stream. 
+  */ 
+ public int write(Sequence sequence, 
+    int nFileType, 
+    OutputStream outputStream) 
+  throws IOException 
+ { 
+  if (! isFileTypeSupported(nFileType, sequence)) 
+  { 
+   throw new IllegalArgumentException("file type is not supported for this sequence"); 
+  } 
+  Track[] aTracks = sequence.getTracks(); 
+  DataOutputStream dataOutputStream = new DataOutputStream(outputStream); 
+  dataOutputStream.writeInt(HEADER_MAGIC); 
+  dataOutputStream.writeInt(6); // header length 
+  dataOutputStream.writeShort(nFileType); 
+  dataOutputStream.writeShort(aTracks.length); 
+  float fDivisionType = sequence.getDivisionType(); 
+  int nResolution = sequence.getResolution(); 
+  int nDivision = 0; 
+  if (fDivisionType == Sequence.PPQ) 
+  { 
+   nDivision = nResolution & 0x7fff; 
+  } 
+  else 
+  { 
+   // TODO: 
+  } 
+  dataOutputStream.writeShort(nDivision); // unsigned? 
+  int nBytesWritten = 14; 
+  for (int nTrack = 0; nTrack < aTracks.length; nTrack++) 
+  { 
+   nBytesWritten += writeTrack(aTracks[nTrack], 
+          dataOutputStream); 
+  } 
+ 
+  return nBytesWritten; 
+ } 
+ 
+ 
+ 
+ /** Write a Sequence as Standard MIDI File (SMF) to a File.
+  A byte stream representing the passed Sequence is written 
+  to the file in the given file type. 
+ 
+  @return The number of bytes written to the file. 
+  */ 
+ public int write(Sequence sequence, 
+    int nFileType, 
+    File file) 
+  throws IOException 
+ { 
+  OutputStream outputStream = new FileOutputStream(file); 
+  int nBytes = write(sequence, 
+           nFileType, 
+           outputStream); 
+  outputStream.close(); 
+  return nBytes; 
+ } 
+ 
+ 
+ 
+ /** Write a Track to a DataOutputStream.
+ 
+ @return The number of bytes written. 
+ */ 
+ private static int writeTrack(Track track, 
+          DataOutputStream dataOutputStream) 
+  throws IOException 
+ { 
+  /** The number of bytes written. This is used as return
+   value for this method. 
+  */ 
+  int nLength = 0; 
+  if (dataOutputStream != null) 
+  { 
+   dataOutputStream.writeInt(TRACK_MAGIC); 
+  } 
+  /*
+   * This is a recursive call! 
+   * It is to find out the length of the track without 
+   * actually writing. Having the second parameter as 
+   * null tells writeTrack() and its subordinate 
+   * methods to not write out data bytes. 
+   */ 
+  int nTrackLength = 0; 
+  if (dataOutputStream != null) 
+  { 
+   nTrackLength = writeTrack(track, null); 
+  } 
+  if (dataOutputStream != null) 
+  { 
+   dataOutputStream.writeInt(nTrackLength); 
+  } 
+  MidiEvent previousEvent = null; 
+  int[] anRunningStatusByte = new int[1]; 
+  anRunningStatusByte[0] = -1; 
+  for (int nEvent = 0; nEvent < track.size(); nEvent++) 
+  { 
+   MidiEvent event = track.get(nEvent); 
+   nLength += writeEvent(event, 
+           previousEvent, 
+           anRunningStatusByte, 
+           dataOutputStream); 
+   previousEvent = event; 
+  } 
+  return nLength; 
+ } 
+ 
+ 
+ 
+ /** TODO:  */ 
+ private static int writeEvent(MidiEvent event, 
+          MidiEvent previousEvent, 
+          int[] anRunningStatusByte, 
+          DataOutputStream dataOutputStream) 
+  throws IOException 
+ { 
+  /** The number of bytes written. This is used as return
+   value for this method. 
+  */ 
+  int nLength = 0; 
+  long lTickDelta = 0; 
+  if (previousEvent != null) 
+  { 
+   lTickDelta = event.getTick() - previousEvent.getTick(); 
+  } 
+  if (lTickDelta < 0) 
+  { 
+   System.out.println("StandardMidiFileWriter.writeEvent(): warning: events not in order"); 
+  } 
+  // add bytes according to coded length of delta 
+  nLength += writeVariableLengthQuantity(lTickDelta, dataOutputStream); 
+  MidiMessage message = event.getMessage(); 
+  // int  nDataLength = message.getLength(); 
+  if (message instanceof ShortMessage) 
+  { 
+   nLength += writeShortMessage((ShortMessage) message, 
+           anRunningStatusByte, 
+           dataOutputStream); 
+  } 
+  else if (message instanceof SysexMessage) 
+  { 
+   nLength += writeSysexMessage((SysexMessage) message, 
+           anRunningStatusByte, 
+           dataOutputStream); 
+  } 
+  else if (message instanceof MetaMessage) 
+  { 
+   nLength += writeMetaMessage((MetaMessage) message, 
+           anRunningStatusByte, 
+           dataOutputStream); 
+  } 
+  else 
+  { 
+   System.out.println("StandardMidiFileWriter.writeEvent(): warning: unknown message class"); 
+  } 
+  return nLength; 
+ } 
+ 
+ 
+ 
+ /** TODO:  */ 
+ private static int writeShortMessage(ShortMessage message, 
+          int[] anRunningStatusByte, 
+          DataOutputStream dataOutputStream) 
+  throws IOException 
+ { 
+  /** The number of bytes written. This is used as return
+   value for this method. 
+  */ 
+  int nLength = 0; 
+  int nDataLength = message.getLength(); 
+  if (USE_RUNNING_STATUS && anRunningStatusByte[0] == message.getStatus()) 
+  { 
+   /*
+    * Write without status byte. 
+    */ 
+   if (dataOutputStream != null) 
+   { 
+    dataOutputStream.write( 
+     message.getMessage(), 
+     1, nDataLength - 1); 
+   } 
+   nLength += nDataLength - 1; 
+  } 
+  else 
+  { 
+   /*
+    * Write with status byte. 
+    */ 
+   if (dataOutputStream != null) 
+   { 
+    dataOutputStream.write( 
+     message.getMessage(), 
+     0, nDataLength); 
+   } 
+   nLength += nDataLength; 
+   anRunningStatusByte[0] = message.getStatus(); 
+  } 
+  return nLength; 
+ } 
+ 
+ 
+ 
+ /** TODO:  */ 
+ private static int writeSysexMessage(SysexMessage message, 
+          int[] anRunningStatusByte, 
+          DataOutputStream dataOutputStream) 
+  throws IOException 
+ { 
+  /** The number of bytes written. This is used as return
+   value for this method. 
+  */ 
+  int nLength = 0; 
+  int nDataLength = message.getLength(); 
+  if (CANCEL_RUNNING_STATUS_ON_META_AND_SYSEX) 
+  { 
+   anRunningStatusByte[0] = -1; 
+  } 
+  if (dataOutputStream != null) 
+  { 
+   dataOutputStream.write(message.getStatus()); 
+  } 
+  nLength++; 
+  nLength += writeVariableLengthQuantity( 
+   nDataLength - 1, 
+   dataOutputStream); 
+  if (dataOutputStream != null) 
+  { 
+   dataOutputStream.write( 
+    message.getData(), 
+    0, nDataLength - 1); 
+  } 
+  nLength += nDataLength - 1; 
+  return nLength; 
+ } 
+ 
+ 
+ 
+ /** TODO:  */ 
+ private static int writeMetaMessage(MetaMessage message, 
+         int[] anRunningStatusByte, 
+         DataOutputStream dataOutputStream) 
+  throws IOException 
+ { 
+  /** The number of bytes written. This is used as return
+   value for this method. 
+  */ 
+  int nLength = 0; 
+  byte[] abData = message.getData(); 
+  int nDataLength = abData.length; 
+  if (CANCEL_RUNNING_STATUS_ON_META_AND_SYSEX) 
+  { 
+   anRunningStatusByte[0] = -1; 
+  } 
+  if (dataOutputStream != null) 
+  { 
+   dataOutputStream.write(message.getStatus()); 
+   dataOutputStream.write(message.getType()); 
+  } 
+  nLength += 2; 
+  nLength += writeVariableLengthQuantity( 
+   nDataLength, 
+   dataOutputStream); 
+  if (dataOutputStream != null) 
+  { 
+   dataOutputStream.write(abData); 
+  } 
+  nLength += nDataLength; 
+  return nLength; 
+ } 
+ 
+ 
+ 
+ /** TODO:
+  outputStream == 0 signals to only calculate the number of 
+  needed to represent the value. 
+ */ 
+ private static int writeVariableLengthQuantity(long lValue, OutputStream outputStream) 
+  throws IOException 
+ { 
+  /** The number of bytes written. This is used as return
+   value for this method. 
+  */ 
+  int nLength = 0; 
+  // IDEA: use a loop 
+  boolean bWritingStarted = false; 
+  int nByte = (int) ((lValue >> 21) & 0x7f); 
+  if (nByte != 0) 
+  { 
+   if (outputStream != null) 
+   { 
+    outputStream.write(nByte | 0x80); 
+   } 
+   nLength++; 
+   bWritingStarted = true; 
+  } 
+  nByte = (int) ((lValue >> 14) & 0x7f); 
+  if (nByte != 0 || bWritingStarted) 
+  { 
+   if (outputStream != null) 
+   { 
+    outputStream.write(nByte | 0x80); 
+   } 
+   nLength++; 
+   bWritingStarted = true; 
+  } 
+  nByte = (int) ((lValue >> 7) & 0x7f); 
+  if (nByte != 0 || bWritingStarted) 
+  { 
+   if (outputStream != null) 
+   { 
+    outputStream.write(nByte | 0x80); 
+   } 
+   nLength++; 
+  } 
+  nByte = (int) (lValue & 0x7f); 
+  if (outputStream != null) 
+  { 
+   outputStream.write(nByte); 
+  } 
+  nLength++; 
+  return nLength; 
+ } 
+} 
+ 
+
+$ cat MiniMusicCmdLine.java
+import javax.sound.midi.*;
+import java.io.File;
+
+public class MiniMusicCmdLine {   // this is the first one
+       
+     public static void main(String[] args) {
+        MiniMusicCmdLine mini = new MiniMusicCmdLine();
+        if (args.length < 2) {
+                System.out.println("Composing");
+                        mini.compose();
+        } else {
+            int instrument = Integer.parseInt(args[0]);
+            int note = Integer.parseInt(args[1]);
+            mini.play(instrument, note);
+            
+        }
+     }
+
+        public void compose(){
+                try {
+
+                final String[] gchromatic = {"G","Ab","A","Bb","B","C","C#","D","Eb","E","F","F#"}; // G chromatic, transpose in MIDI if needed
+
+                final String[] dscale =     {"1","0" ,"1","1", "0","1","0" ,"1","0" ,"1","1","0"}; // semitones in Dorian scale
+                final String[] bscale =     {"1","0" ,"0","1", "0","1","1" ,"1","0" ,"0","1","0"}; // semitones in Blues scale
+                final String[] pscale =     {"1","0" ,"1","0", "0","1","1" ,"1","0" ,"1","0","0"}; // semitones in Pentatonic scale
+                final String[] mscale =     {"1","0" ,"0","1", "0","1","0" ,"1","0" ,"0","1","0"}; // semitones in Minor Penta scale
+
+                String[] workingscale = mscale;
+
+                int samples = 32;
+                int budget = 12;
+                int start = 60;
+                int midioffset = -5; // for g3 midi 55
+                int target = start;
+                int step = 0;
+                int count = 1;
+                int interval;
+                int instrument = 1;
+                double ratio;
+
+                StandardMidiFileWriter smfw = new StandardMidiFileWriter();
+
+        if(smfw.USE_RUNNING_STATUS){
+                System.out.println("Working");
+        }
+
+         Sequence seq = new Sequence(Sequence.PPQ, 4);
+         Track track = seq.createTrack();
+
+         MidiEvent event = null;
+
+         ShortMessage first = new ShortMessage();
+         first.setMessage(192, 1, instrument, 0);
+         MidiEvent changeInstrument = new MidiEvent(first, 1);
+         track.add(changeInstrument);
+
+
+        ShortMessage a = new ShortMessage();
+         MidiEvent noteOn;
+
+         ShortMessage b = new ShortMessage();
+         MidiEvent noteOff;
+
+
+                int note = start;
+
+                while (step < samples){
+                        ratio = (double)(budget + count - 1 ) / (double)(samples - step);
+                        //System.out.printf("ratio:%f %d %d %d %d\n", ratio, budget, count, samples, step);
+                        if(ratio > Math.random()){
+                                System.out.printf("Note:%s Midi:%d Dur: %d %d\n", gchromatic[note % 12],note + midioffset, count, 1);
+                                a.setMessage(144, 1, note + midioffset, 100);
+                                noteOn = new MidiEvent(a, step - count);
+                                track.add(noteOn);
+                                b.setMessage(128, 1, note + midioffset, 100);
+                                noteOff = new MidiEvent(b, step);
+                                track.add(noteOff);
+
+                                while(true){
+                                        interval = (int)(Math.random() * 13) - 6; // +/- half octive
+                                        if(workingscale[(note + interval) % 12].equals("1")){
+                                                note += interval;
+                                                break;
+                                        }
+                                }
+                                count = 1;
+                                budget--;
+                        }else{
+                                count++;
+                        }
+
+                        step++;
+                } // while
+
+
+        if(smfw.USE_RUNNING_STATUS){
+                System.out.println("Working");
+        }     
+                        System.out.println("Writing");
+                        File outfile=new File("output.mid");
+                        smfw.write(seq, 0, outfile);
+                } catch (Exception ex){
+                        System.out.println("Exception during write");
+                        ex.printStackTrace();
+                }
+
+
+
+        } // compose
+
+    public void play(int instrument, int note) {
+
+      try {
+ 
+         Sequencer player = MidiSystem.getSequencer();         
+         player.open();
+        
+         Sequence seq = new Sequence(Sequence.PPQ, 4);         
+         Track track = seq.createTrack();  
+          
+         MidiEvent event = null;
+
+         ShortMessage first = new ShortMessage();
+         first.setMessage(192, 1, instrument, 0);
+         MidiEvent changeInstrument = new MidiEvent(first, 1); 
+         track.add(changeInstrument);
+
+         
+         ShortMessage a = new ShortMessage();
+         a.setMessage(144, 1, note, 100);
+         MidiEvent noteOn = new MidiEvent(a, 1); 
+         track.add(noteOn);
+
+         ShortMessage b = new ShortMessage();
+         b.setMessage(128, 1, note, 100);
+         MidiEvent noteOff = new MidiEvent(b, 16); 
+         track.add(noteOff);
+         player.setSequence(seq); 
+         player.start();
+         // new
+             Thread.sleep(5000);
+             player.close();
+         System.exit(0);
+
+      } catch (Exception ex) {ex.printStackTrace();}
+  } // close play
+
+} // close class
+
